@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/usb-stack/!svn/ver/79/branches/pingpong/dfu
+END
+dfu.c
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/usb-stack/!svn/ver/79/branches/pingpong/dfu/dfu.c
+END
+dfu.h
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/usb-stack/!svn/ver/79/branches/pingpong/dfu/dfu.h
+END
+usb_config.h
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/usb-stack/!svn/ver/79/branches/pingpong/dfu/usb_config.h
+END
+dfu_p24f.c
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/usb-stack/!svn/ver/79/branches/pingpong/dfu/dfu_p24f.c
+END
+dfu_p18f.asm
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/usb-stack/!svn/ver/79/branches/pingpong/dfu/dfu_p18f.asm
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/usb-stack/!svn/ver/79/branches/pingpong/dfu/Makefile
+END

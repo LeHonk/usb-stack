@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 37
+/svn/usb-stack/!svn/ver/81/trunk/core
+END
+usb_p24f.h
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/usb-stack/!svn/ver/81/trunk/core/usb_p24f.h
+END
+usb_p18f.h
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/usb-stack/!svn/ver/56/trunk/core/usb_p18f.h
+END
+usb_stack.c
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/usb-stack/!svn/ver/81/trunk/core/usb_stack.c
+END
+Makefile.include
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/usb-stack/!svn/ver/81/trunk/core/Makefile.include
+END
+usb_lang.h
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/usb-stack/!svn/ver/81/trunk/core/usb_lang.h
+END
+honkutil.h
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/usb-stack/!svn/ver/81/trunk/core/honkutil.h
+END
+usb_stack.h
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/usb-stack/!svn/ver/81/trunk/core/usb_stack.h
+END

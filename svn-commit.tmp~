@@ -1,0 +1,7 @@
+
+--This line, and those below, will be ignored--
+
+M    trunk/msd/mmc.h
+M    branches/pingpong/core/usb_stack.h
+M    branches/pingpong/core/usb_stack.c
+M    branches/pingpong/cdc/cdc.c

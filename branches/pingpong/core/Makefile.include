@@ -1,0 +1,68 @@
+#
+# Base Makefile for usb_stack applications
+#
+# $Id: Makefile.include 75 2012-07-09 00:08:36Z tomhol $
+#
+
+CC	:= pic30-gcc
+LD	:= pic30-gcc
+AS	:= pic30-as
+HX  := pic30-bin2hex
+
+LIBFLAGS := --start-group \
+						$(patsubst lib%,-l%,$(LIBS)) \
+						--end-group
+#	       -lp$(subst f,F,$(MCU)) \
+
+VPATH	:= ../core
+OBJS	:= $(ASRCS:.c=.o) $(CSRCS:.c=.o)
+
+CFLAGS	:= -mcpu=$(MCU) -mconst-in-code -finline-functions -Wall -O2 -I ../core/ -I .
+LFLAGS	+= -mcpu=$(MCU) -Wl,-Map=$(TARGET:.hex=.map),--heap=32,--gc-sections,--warn-section-align \
+           -Wl,--no-undefined,-T,p$(MCU).gld,--report-mem
+
+DEBUG ?= 1
+ifeq ($(DEBUG), 1)
+CFLAGS += -g --debug -D__DEBUG
+else
+CFLAGS += -DNDEBUG
+endif
+
+comma:= ,
+empty:=
+space:= $(empty) $(empty)
+
+all :	target
+
+target:	$(TARGET)
+
+.PHONY:	clean
+clean:
+	rm -f $(TARGET) $(TARGET:.hex=.cof) $(TARGET:.hex=.map) $(OBJS) $(OBJS:.o=.d) $(CSRCS:.c=.s)
+
+install: $(TARGET)
+	pk2cmd -PPIC$(MCU) -F$(TARGET) -M -Z
+
+.PHONY:	verify
+verify:	$(TARGET)
+	pk2cmd -PPIC$(MCU) -F$(TARGET) -Y
+
+.PHONY: monitor
+monitor:
+	pk2serial -e
+
+%.o :	%.c %.d
+	$(CC) $(CFLAGS) -o $@ -c $<
+
+%.s:	%.c %.d
+	$(CC) $(CFLAGS) -o $@ -S $<
+
+$(TARGET):	$(OBJS)
+	$(LD) $(LFLAGS) -o $(@:.hex=.cof) $^ $(LIBFLAGS)
+	$(HX) $(@:.hex=.cof)
+
+%.d:	%.c
+	$(CC) $(CFLAGS) -MM $< -MT $@ -MT $(@:.d=.o) -MF $@
+
+-include $(OBJS:.o=.d)
+

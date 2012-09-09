@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/usb-stack/!svn/ver/79/branches/pingpong/hid
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/usb-stack/!svn/ver/79/branches/pingpong/hid/Makefile
+END
+usb_config.h
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/usb-stack/!svn/ver/79/branches/pingpong/hid/usb_config.h
+END
+hid.c
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/usb-stack/!svn/ver/79/branches/pingpong/hid/hid.c
+END
+main.c
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/usb-stack/!svn/ver/79/branches/pingpong/hid/main.c
+END
+descriptors.h
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/usb-stack/!svn/ver/79/branches/pingpong/hid/descriptors.h
+END
+hid.h
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/usb-stack/!svn/ver/79/branches/pingpong/hid/hid.h
+END

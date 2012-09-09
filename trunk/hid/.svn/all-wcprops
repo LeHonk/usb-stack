@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 36
+/svn/usb-stack/!svn/ver/81/trunk/hid
+END
+usb_config.h
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/usb-stack/!svn/ver/81/trunk/hid/usb_config.h
+END
+hid.c
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/usb-stack/!svn/ver/81/trunk/hid/hid.c
+END
+main.c
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/usb-stack/!svn/ver/81/trunk/hid/main.c
+END
+descriptors.h
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/usb-stack/!svn/ver/81/trunk/hid/descriptors.h
+END
+hid.h
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/usb-stack/!svn/ver/81/trunk/hid/hid.h
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/usb-stack/!svn/ver/81/trunk/hid/Makefile
+END

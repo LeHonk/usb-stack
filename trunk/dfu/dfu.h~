@@ -1,0 +1,76 @@
+/*
+This work is licensed under the Creative Commons Attribution 3.0 Unported License.
+To view a copy of this license, visit http://creativecommons.org/licenses/by/3.0/
+or send a letter to
+	Creative Commons,
+	171 Second Street,
+	Suite 300,
+	San Francisco,
+	California,
+	94105,
+	USA.
+*/
+
+#ifndef __DFU_H__
+#define __DFU_H__
+
+#include "usb_stack.h"
+
+#define DFU_PAGE_SIZE			512
+
+#if DFU_PAGE_SIZE == 8
+#define DFU_XFER_SIZE 8u
+#elif DFU_PAGE_SIZE == 16
+#define DFU_XFER_SIZE 16u
+#elif DFU_PAGE_SIZE == 32
+#define DFU_XFER_SIZE 32u
+#elif DFU_PAGE_SIZE == 64
+#define DFU_XFER_SIZE 64u
+#else
+#define DFU_XFER_SIZE 64u
+#endif
+
+#define DFU_bitWillDetach		0x08
+#define DFU_bitManifestTolerant	0x04
+#define DFU_bitCanUpload		0x02
+#define	DFU_bitCanDnload		0x01
+
+#ifndef DFU_INTERFACE_NUMBER
+#error	"Must define runtime DFU_INTERFACE_NUMBER"
+#endif
+
+#ifndef DFU_INTERFACE_STRING_NUMBER
+/* No string number defined - set it to zero to indicate non-existant */
+#define DFU_INTERFACE_STRING_NUMBER 0x00
+#endif
+
+#define DFU_INTERFACE_STRING	42,'H',0,'o',0,'n',0,'k',0,'e',0,'n',0,' ',0,'D',0,'F',0,'U',0,' ',0,'b',0,'o',0,'o',0,'t',0,'l',0,'o',0,'a',0,'d',0,'e',0,'r',0
+
+#define DFU_INTERFACE_DESC		0x09							/* bLength */,					\
+								USB_INTERFACE_DESCRIPTOR_TYPE	/* bDescriptorType */,			\
+								DFU_INTERFACE_NUMBER			/* bInterfaceNumber */,			\
+								0x00							/* bAlternateSetting */,		\
+								0x00							/* bNumEndpoints */,			\
+								0xFE							/* bInterfaceClass */,			\
+								0x01							/* bInterfaceSubclass */,		\
+								0x01							/* bInterfaceProtocol */,		\
+								DFU_INTERFACE_STRING_NUMBER		/* iInterface */
+
+#define DFU_FUNCTIONAL_DESC		0x09							/* bLength */,					\
+								0x21							/* bDescriptorType */,			\
+									DFU_bitWillDetach |											\
+									DFU_bitManifestTolerant |									\
+									DFU_bitCanUpload |											\
+									DFU_bitCanDnload			/* bmAttributes */,				\
+								0x80, 0x00						/* wDetachTimeOut (ms) */,		\
+								LOWB(DFU_XFER_SIZE),											\
+								HIGHB(DFU_XFER_SIZE)			/* wTransferSize (32 bytes) */,	\
+								0x10, 0x01 						/* bcdDFUVersion */
+
+#define DFU_RUNTIME_DESC_LENGTH	(9+9)
+#define DFU_RUNTIME_DESC		DFU_INTERFACE_DESC, \
+								DFU_FUNCTIONAL_DESC
+
+extern void dfu_runtime_init( unsigned char interface_num );
+
+#endif //__DFU_H__

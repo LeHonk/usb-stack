@@ -1,0 +1,42 @@
+/*
+Arcitecture specific flash memory functions
+$Id$
+
+This work is licensed under the Creative Commons Attribution 3.0 Unported License.
+To view a copy of this license, visit http://creativecommons.org/licenses/by/3.0/
+or send a letter to
+	Creative Commons,
+	171 Second Street,
+	Suite 300,
+	San Francisco,
+	California,
+	94105,
+	USA.
+*/
+
+#include <p24Fxxxx.h>
+#include <libpic30.h>
+#include "dfu.h"
+
+unsigned int get_devid( void ) {
+	unsigned int devid;
+	_memcpy_p2d16( (char *) &devid, 0xFF0000, 1u);
+	return devid;
+}
+
+void erase_flash( unsigned long dst ) {
+	_erase_flash( dst );
+}
+
+void  read_flash( char *dst, unsigned long src ) {
+	_memcpy_p2d24( dst, src, DFU_PAGE_SIZE );
+}
+
+void write_flash( unsigned long dst, const unsigned char *src ) {
+	unsigned int n;
+	for (n=0; n<_FLASH_PAGE; n+=_FLASH_ROW) {
+		_write_flash24( (_prog_addressT) dst, (long *) src );
+		dst+=_FLASH_ROW * 2;
+		src+=_FLASH_ROW;
+	}
+}

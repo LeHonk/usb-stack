@@ -1,0 +1,89 @@
+K 25
+svn:wc:ra_dav:version-url
+V 36
+/svn/usb-stack/!svn/ver/83/trunk/cdc
+END
+honken.cat
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/usb-stack/!svn/ver/48/trunk/cdc/honken.cat
+END
+usb_stack_p24.mcw
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/usb-stack/!svn/ver/48/trunk/cdc/usb_stack_p24.mcw
+END
+usb_stack_irtoy.mcw
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/usb-stack/!svn/ver/48/trunk/cdc/usb_stack_irtoy.mcw
+END
+cdc.c
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/usb-stack/!svn/ver/83/trunk/cdc/cdc.c
+END
+config.h
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/usb-stack/!svn/ver/81/trunk/cdc/config.h
+END
+usb_stack.mcp
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/usb-stack/!svn/ver/48/trunk/cdc/usb_stack.mcp
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/usb-stack/!svn/ver/81/trunk/cdc/Makefile
+END
+honken.inf
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/usb-stack/!svn/ver/48/trunk/cdc/honken.inf
+END
+cdc.h
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/usb-stack/!svn/ver/81/trunk/cdc/cdc.h
+END
+usb_stack_p24.mcp
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/usb-stack/!svn/ver/48/trunk/cdc/usb_stack_p24.mcp
+END
+usb_stack.mcw
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/usb-stack/!svn/ver/48/trunk/cdc/usb_stack.mcw
+END
+usb_config.h
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/usb-stack/!svn/ver/56/trunk/cdc/usb_config.h
+END
+main.c
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/usb-stack/!svn/ver/81/trunk/cdc/main.c
+END
+descriptors.h
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/usb-stack/!svn/ver/81/trunk/cdc/descriptors.h
+END

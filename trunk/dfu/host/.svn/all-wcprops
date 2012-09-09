@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 41
+/svn/usb-stack/!svn/ver/81/trunk/dfu/host
+END
+dfu_suffix.py
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/usb-stack/!svn/ver/81/trunk/dfu/host/dfu_suffix.py
+END
+hex2dfu.py
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/usb-stack/!svn/ver/81/trunk/dfu/host/hex2dfu.py
+END
+dfu_doer.py
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/usb-stack/!svn/ver/81/trunk/dfu/host/dfu_doer.py
+END
+intel_hex_format.py
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/usb-stack/!svn/ver/81/trunk/dfu/host/intel_hex_format.py
+END

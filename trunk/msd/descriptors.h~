@@ -1,0 +1,99 @@
+/*
+This work is licensed under the Creative Commons Attribution 3.0 Unported License.
+To view a copy of this license, visit http://creativecommons.org/licenses/by/3.0/
+or send a letter to
+	Creative Commons,
+	171 Second Street,
+	Suite 300,
+	San Francisco,
+	California,
+	94105,
+	USA.
+*/
+
+#ifndef __DESCRIPTORS_H__
+#define __DESCRIPTORS_H__
+
+#include "usb_stack.h"
+
+ROM const unsigned char msd_device_descriptor[] = {
+	0x12,					// bLength
+	USB_DEVICE_DESCRIPTOR_TYPE,		// bDescriptorType
+	0x00,					// bcdUSB (low byte)
+	0x02,					// bcdUSB (high byte)
+	0x00,					// bDeviceClass
+	0x00,					// bDeviceSubClass
+	0x00,					// bDeviceProtocol
+	USB_EP0_BUFFER_SIZE,			// bMaxPacketSize
+	LOWB ( USB_VID ),			// idVendor (low byte)
+	HIGHB ( USB_VID ),			// idVendor (high byte)
+	LOWB ( USB_PID ),			// idProduct (low byte)
+	HIGHB ( USB_PID ),			// idProduct (high byte)
+	LOWB ( USB_DEV ),			// bcdDevice (low byte)
+	HIGHB ( USB_DEV ),			// bcdDevice (high byte)
+	USB_iManufacturer,			// iManufacturer
+	USB_iProduct,				// iProduct
+	USB_iSerialNum,				// iSerialNumber (none)
+	USB_NUM_CONFIGURATIONS			// bNumConfigurations 
+};
+
+#define USB_CONFIG_DESC_TOT_LENGTH (9+9+7+7)	//+DFU_RUNTIME_DESC_LENGTH)
+ROM const unsigned char msd_config_descriptor[] = {
+	0x09,					// bLength
+	USB_CONFIGURATION_DESCRIPTOR_TYPE,	// bDescriptorType
+	LOWB ( USB_CONFIG_DESC_TOT_LENGTH ),	// wTotalLength (low byte), TODO: Automatic calculation - sizeof doesn't work here
+	HIGHB ( USB_CONFIG_DESC_TOT_LENGTH ),	// wTotalLength (high byte)
+	USB_NUM_INTERFACES,			// bNumInterfaces
+	0x01,					// bConfigurationValue
+	0x00,					// iConfiguration (0=none)
+	0x80,					// bmAttributes (0x80 = bus powered)
+	0x32,					// bMaxPower (in 2 mA units, 50=100 mA)
+
+	0x09,					// bLength (Interface0 descriptor starts here)
+	USB_INTERFACE_DESCRIPTOR_TYPE,		// bDescriptorType
+	0x00,					// bInterfaceNumber
+	0x00,					// bAlternateSetting
+	USB_NUM_ENDPOINTS,			// bNumEndpoints (excluding EP0)
+	0x08,					// bInterfaceClass (0x00=per endpoint specified, 0xFF=vendor specific)
+	0x06,					// bInterfaceSubClass (0x00=per endpoint specified, 0xFF=vendor specific)
+	0x50,					// bInterfaceProtocol (0x00=no protocol, 0xFE=as by command set, 0xFF=vendor specific)
+	0x00,					// iInterface (none)
+
+	0x07,					// bLength (Endpoint1 descriptor)
+	USB_ENDPOINT_DESCRIPTOR_TYPE,		// bDescriptorType
+	0x81,					// bEndpointAddress (0x80=in)
+	0x02,					// bmAttributes (0x02=bulk, 0x03=intr)
+	LOWB ( MSD_RXTX_BUFFER_SIZE ),		// wMaxPacketSize (low byte)
+	HIGHB ( MSD_RXTX_BUFFER_SIZE ),		// wMaxPacketSize (high byte)
+	0x00,					// bInterval
+
+	0x07,					// bLength
+	USB_ENDPOINT_DESCRIPTOR_TYPE,		// bDescriptorType
+	0x01,					// bEndpointAddress (0x00=out)
+	0x02,					// bmAttributes (0x02=bulk)
+	LOWB ( MSD_RXTX_BUFFER_SIZE ),		// wMaxPacketSize (low byte)
+	HIGHB ( MSD_RXTX_BUFFER_SIZE ),		// wMaxPacketSize (high byte)
+	0x00					// bInterval
+		// DFU_RUNTIME_DESC
+};
+
+// TODO: Rework to ordinary datastructures.
+
+ROM const unsigned char msd_str_descs[] = {
+	/* 0 */ 4, USB_STRING_DESCRIPTOR_TYPE,
+	LOWB ( USB_LANGID_English_United_States ),
+	HIGHB ( USB_LANGID_English_United_States ),
+	/* USB_iManufacturer */ 14, USB_STRING_DESCRIPTOR_TYPE, 'H', 0, 'o',
+		0, 'n',
+	0, 'k', 0, 'e', 0, 'n', 0,
+	/* USB_iProduct */ 22, USB_STRING_DESCRIPTOR_TYPE, 'C', 0, 'a', 0,
+		'r', 0,
+	'd', 0, 'R', 0, 'e', 0, 'a', 0, 'd', 0, 'e', 0, 'r', 0,
+	/* USB_iSerialNum */ 18, USB_STRING_DESCRIPTOR_TYPE, '0', 0, '0', 0,
+		'0', 0,
+	'0', 0, '0', 0, '0', 0, '0', 0, '1', 0
+};
+
+/* TODO: Develop prebuild script for generating all complex structures */
+
+#endif //__DESCRIPTORS_H__

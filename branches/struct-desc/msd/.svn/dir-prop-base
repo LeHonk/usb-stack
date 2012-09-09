@@ -1,0 +1,9 @@
+K 10
+svn:ignore
+V 22
+*.map
+*.hex
+*.cof
+*.d
+
+END

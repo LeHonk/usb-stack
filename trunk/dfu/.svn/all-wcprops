@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 36
+/svn/usb-stack/!svn/ver/81/trunk/dfu
+END
+dfu_p24f.c
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/usb-stack/!svn/ver/81/trunk/dfu/dfu_p24f.c
+END
+dfu_p18f.asm
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/usb-stack/!svn/ver/81/trunk/dfu/dfu_p18f.asm
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/usb-stack/!svn/ver/81/trunk/dfu/Makefile
+END
+dfu.c
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/usb-stack/!svn/ver/81/trunk/dfu/dfu.c
+END
+dfu.h
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/usb-stack/!svn/ver/81/trunk/dfu/dfu.h
+END
+usb_config.h
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/usb-stack/!svn/ver/81/trunk/dfu/usb_config.h
+END

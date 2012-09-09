@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/usb-stack/!svn/ver/74/branches/struct-desc/msd
+END
+msd.h
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/usb-stack/!svn/ver/74/branches/struct-desc/msd/msd.h
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/usb-stack/!svn/ver/74/branches/struct-desc/msd/Makefile
+END
+mmc.h
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/usb-stack/!svn/ver/74/branches/struct-desc/msd/mmc.h
+END
+scsi.c
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/usb-stack/!svn/ver/74/branches/struct-desc/msd/scsi.c
+END
+msd.c
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/usb-stack/!svn/ver/74/branches/struct-desc/msd/msd.c
+END
+usb_config.h
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/usb-stack/!svn/ver/62/branches/struct-desc/msd/usb_config.h
+END
+main.c
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/usb-stack/!svn/ver/74/branches/struct-desc/msd/main.c
+END
+descriptors.h
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/usb-stack/!svn/ver/74/branches/struct-desc/msd/descriptors.h
+END
+scsi.h
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/usb-stack/!svn/ver/74/branches/struct-desc/msd/scsi.h
+END

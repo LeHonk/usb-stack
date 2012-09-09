@@ -1,0 +1,89 @@
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/usb-stack/!svn/ver/79/branches/pingpong/cdc
+END
+descriptors.h
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/usb-stack/!svn/ver/79/branches/pingpong/cdc/descriptors.h
+END
+honken.cat
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/usb-stack/!svn/ver/79/branches/pingpong/cdc/honken.cat
+END
+usb_stack_p24.mcw
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/usb-stack/!svn/ver/79/branches/pingpong/cdc/usb_stack_p24.mcw
+END
+usb_stack_irtoy.mcw
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/usb-stack/!svn/ver/79/branches/pingpong/cdc/usb_stack_irtoy.mcw
+END
+cdc.c
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/usb-stack/!svn/ver/85/branches/pingpong/cdc/cdc.c
+END
+config.h
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/usb-stack/!svn/ver/79/branches/pingpong/cdc/config.h
+END
+usb_stack.mcp
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/usb-stack/!svn/ver/79/branches/pingpong/cdc/usb_stack.mcp
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/usb-stack/!svn/ver/79/branches/pingpong/cdc/Makefile
+END
+honken.inf
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/usb-stack/!svn/ver/79/branches/pingpong/cdc/honken.inf
+END
+cdc.h
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/usb-stack/!svn/ver/79/branches/pingpong/cdc/cdc.h
+END
+usb_stack_p24.mcp
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/usb-stack/!svn/ver/79/branches/pingpong/cdc/usb_stack_p24.mcp
+END
+usb_stack.mcw
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/usb-stack/!svn/ver/79/branches/pingpong/cdc/usb_stack.mcw
+END
+usb_config.h
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/usb-stack/!svn/ver/79/branches/pingpong/cdc/usb_config.h
+END
+main.c
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/usb-stack/!svn/ver/79/branches/pingpong/cdc/main.c
+END
