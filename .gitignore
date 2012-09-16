@@ -1,0 +1,10 @@
+# Ignore generated dependency files
+*.d
+# Ignore files created during compilation
+*.o
+*.cof
+*.map
+*.hex
+# Ignore editor backups
+*~
+
