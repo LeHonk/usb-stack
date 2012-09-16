@@ -80,9 +80,9 @@ static void send_descriptor( void );
 
 void
 usb_init ( ROM const struct usb_device_descriptor_st *device,
-		       ROM const struct usb_configuration_descriptor_st *config,
-					 ROM const struct usb_string_descriptor_st **strings,
-					 int num_strings )
+	   ROM const struct usb_configuration_descriptor_st *config,
+	   ROM const struct usb_string_descriptor_st **strings,
+	   int num_strings )
 {
 	int       i;
 
@@ -97,7 +97,7 @@ usb_init ( ROM const struct usb_device_descriptor_st *device,
 	ResetPPbuffers();
 
 	DisableAllUsbInterrupts();
-  EnableAllUsbErrorInterrupts();                // Enable all errors to set flag in UIR
+        EnableAllUsbErrorInterrupts();          // Enable all errors to set flag in UIR
 
 	ClearAllUsbErrorInterruptFlags();
 	ClearAllUsbInterruptFlags();
@@ -188,14 +188,14 @@ usb_handler( void )
 		/* Activity - unsuspend */
 		WakeupUsb();
 		ClearUsbInterruptFlag( USB_ACTIV );
-    DisableUsbInterrupt( USB_ACTIV );           // Disable usb activity interrupt, following JTR's suggestion
+		DisableUsbInterrupt( USB_ACTIV );           /* Disable usb activity interrupt, following JTR's suggestion */
 		DPRINTF( "Active\n" );
 	} else if ( USB_IDLE_FLAG ) {
 		/* Idle - suspend */
 		SuspendUsb();
 		usb_low_power_request();
 		ClearUsbInterruptFlag( USB_IDLE );
-    EnableUsbInterrupt( USB_ACTIV );            // Enable usb activity interrupt, per JTR's suggestion
+		EnableUsbInterrupt( USB_ACTIV );            /* Enable usb activity interrupt, per JTR's suggestion */
 		DPRINTF( "Idle\n" );
 	} else if ( USB_STALL_FLAG ) {
 		/* Stall detected

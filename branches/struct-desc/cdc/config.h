@@ -117,7 +117,7 @@
 
 #elif defined(__PIC24F__)
 
-#include <p24fxxxx.h>
+#include <p24Fxxxx.h>
 #define MAIN_t int
 #define MAIN_END return 0;
 
