@@ -1,4 +1,4 @@
-/* $Id: config.h 81 2012-07-10 22:47:59Z tomhol $
+/* 
  *
  *	License: creative commons - attribution, share-alike 
  *	Copyright Ian Lesnet 2010

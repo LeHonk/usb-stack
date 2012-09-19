@@ -1,6 +1,6 @@
 /*
 Implementation of USB Device Firmware Upgrade Device Class version 1.1
-$Id: dfu.c 75 2012-07-09 00:08:36Z tomhol $
+
 
 This work is licensed under the Creative Commons Attribution 3.0 Unported License.
 To view a copy of this license, visit http://creativecommons.org/licenses/by/3.0/

@@ -1,5 +1,5 @@
 /*
-$Id: usb_config.h 56 2012-02-15 11:36:35Z tomhol $
+
 
 This work is licensed under the Creative Commons Attribution 3.0 Unported License.
 To view a copy of this license, visit http://creativecommons.org/licenses/by/3.0/

@@ -5,7 +5,7 @@
  *
  *    Description:  Implementation of HID class
  *
- *             Id:  $Id: hid.c 74 2012-07-05 22:40:24Z tomhol $
+ *             Id:  
  *        Created:  04.03.2012 19:16:47
  *       Revision:  none
  *

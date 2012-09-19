@@ -1,7 +1,7 @@
 /*
 Implementation of MultiMediaCard access
 
-$Id: mmc.h 85 2012-07-13 20:55:21Z tomhol $
+
 
 This work is licensed under the Creative Commons Attribution 3.0 Unported License.
 To view a copy of this license, visit http://creativecommons.org/licenses/by/3.0/

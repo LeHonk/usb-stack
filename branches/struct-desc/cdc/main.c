@@ -1,6 +1,6 @@
 /*
 Main program, implements an echo service on a USB CDC ACM connection.
-$Id: main.c 70 2012-07-01 22:41:01Z tomhol $
+
 
 This work is licensed under the Creative Commons Attribution 3.0 Unported License.
 To view a copy of this license, visit http://creativecommons.org/licenses/by/3.0/
