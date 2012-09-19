@@ -88,7 +88,7 @@ typedef unsigned int usb_uep_t;
 #define WakeupUsb()				do {_USUSPND = 0; while(USB_ACTIVITY_FLAG){U1IR = USB_ACTIVITY_FLAG;}} while(0)
 
 /* UADDR */
-#define SetUsbAddress(x)			U1ADDR = x
+#define SetUsbAddress(x)			U1ADDR = (x)
 #define GetUsbAddress()				(U1ADDR)
 
 /* USTAT */
