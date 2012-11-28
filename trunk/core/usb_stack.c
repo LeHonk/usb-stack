@@ -59,7 +59,7 @@ unsigned char usb_addr_pending;									// The usb address the host wants this d
 usb_status_t trn_status;                        // Global since it is needed everywere
 BDentry  *bdp, *rbdp;                           // Dito
 ROM const uint8_t *desc_ptr;                    // These also
-int	desc_len;
+uint16_t	desc_len;
 
 /* Forward Reference Prototypes */
 void      usb_handle_error ( void );
@@ -80,9 +80,9 @@ static void send_descriptor( void );
 
 void
 usb_init ( ROM const struct usb_device_descriptor_st *device,
-		       ROM const struct usb_configuration_descriptor_st *config,
-					 ROM const struct usb_string_descriptor_st **strings,
-					 int num_strings )
+	   ROM const struct usb_configuration_descriptor_st *config,
+	   ROM const struct usb_string_descriptor_st **strings,
+	   int num_strings )
 {
 	int       i;
 
@@ -97,7 +97,7 @@ usb_init ( ROM const struct usb_device_descriptor_st *device,
 	ResetPPbuffers();
 
 	DisableAllUsbInterrupts();
-  EnableAllUsbErrorInterrupts();                // Enable all errors to set flag in UIR
+        EnableAllUsbErrorInterrupts();          // Enable all errors to set flag in UIR
 
 	ClearAllUsbErrorInterruptFlags();
 	ClearAllUsbInterruptFlags();
@@ -159,8 +159,8 @@ void
 usb_start( void )
 {
 	DPRINTF( "Starting usb " );
-  EnableUsb();                                  // Enable USB-hardware
-  while ( SingleEndedZeroIsSet() );             // Busywait for initial power-up
+	EnableUsb();                                  // Enable USB-hardware
+	while ( SingleEndedZeroIsSet() );             // Busywait for initial power-up
 	DPRINTF( "sucessful\n" );
 	// JTR USB_ACTIV should be enabled in the SUSPEND mode handler.
 	EnableUsbInterrupt( USB_STALL + USB_IDLE + USB_TRN + USB_SOF + USB_UERR + USB_URST );
@@ -188,14 +188,14 @@ usb_handler( void )
 		/* Activity - unsuspend */
 		WakeupUsb();
 		ClearUsbInterruptFlag( USB_ACTIV );
-    DisableUsbInterrupt( USB_ACTIV );           // Disable usb activity interrupt, following JTR's suggestion
+		DisableUsbInterrupt( USB_ACTIV );           /* Disable usb activity interrupt, following JTR's suggestion */
 		DPRINTF( "Active\n" );
 	} else if ( USB_IDLE_FLAG ) {
 		/* Idle - suspend */
-		SuspendUsb();
+		//SuspendUsb();
 		usb_low_power_request();
 		ClearUsbInterruptFlag( USB_IDLE );
-    EnableUsbInterrupt( USB_ACTIV );            // Enable usb activity interrupt, per JTR's suggestion
+		EnableUsbInterrupt( USB_ACTIV );            /* Enable usb activity interrupt, per JTR's suggestion */
 		DPRINTF( "Idle\n" );
 	} else if ( USB_STALL_FLAG ) {
 		/* Stall detected
@@ -207,8 +207,7 @@ usb_handler( void )
 		DPRINTF( "Stall interrupt fired" );
 	} else if ( USB_SOF_FLAG ) {
 		/* Start-of-frame */
-		if ( sof_handler )
-			sof_handler();
+		if ( sof_handler ) sof_handler();
 		ClearUsbInterruptFlag( USB_SOF );
 	} else if ( USB_TRANSACTION_FLAG ) {
 		usb_handle_transaction();
@@ -286,7 +285,7 @@ usb_handle_transaction( void )
                                USB_DIR_IN,      // All replies in IN direction
 				      								 USB_PP_EVEN )];	// TODO: Implement Ping-Pong buffering
 
-//      DPRINTF("USTAT: 0x%02X PID 0x%02X DATA%c ", trn_status, bdp->BDSTAT % USB_TOKEN_Mask, (bdp->BDSTAT & 0x40)?'1':'0');
+	DPRINTF("USTAT: 0x%02X PID 0x%02X DATA%c ", trn_status, bdp->BDSTAT % USB_TOKEN_Mask, (bdp->BDSTAT & 0x40)?'1':'0');
 	switch ( bdp->BDSTAT & USB_TOKEN_Mask ) {
 	case USB_TOKEN_SETUP:
 		usb_handle_setup();
@@ -431,7 +430,7 @@ usb_handle_StandardDeviceRequest( BDentry * bdp )
 		}
 		if ( packet->wLength < desc_len )
 			desc_len = packet->wLength;
-    send_descriptor();                      // Send first part of packet right away
+                send_descriptor();              // Send first part of packet right away
 		usb_set_in_handler( 0, send_descriptor );
 		break;
 	case USB_REQUEST_GET_CONFIGURATION:
@@ -742,13 +741,11 @@ static void
 send_descriptor( void )
 {
 	unsigned int i;
-	BDentry  *bd;
-	size_t    packet_len;
+	uint16_t packet_len;
 
 	if ( desc_len ) {
 		packet_len = ( desc_len < USB_EP0_BUFFER_SIZE ) ? desc_len : USB_EP0_BUFFER_SIZE;
-		bd = &usb_bdt[USB_CALC_BD ( 0, USB_DIR_IN, USB_STAT2PPI ( trn_status ) ? 0x01 : 0x00 )];
-		DPRINTF( "Send bd: 0x%p dst: 0x%p src: 0x%p len: %u Data: ", rbdp, rbdp->BDADDR, desc_ptr, packet_len );
+		DPRINTF( "Send bd: 0x%p dst: 0x%p len: %x Data: ", rbdp, rbdp->BDADDR, packet_len );
 		//ARCH_memcpy(rbdp->BDADDR, usb_desc_ptr, packet_len);
 		for ( i = 0; i < packet_len; i++ ) {
 			rbdp->BDADDR[i] = desc_ptr[i];
@@ -765,3 +762,4 @@ send_descriptor( void )
 	desc_ptr += packet_len;
 	desc_len -= packet_len;
 }
+

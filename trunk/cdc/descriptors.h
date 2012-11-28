@@ -49,80 +49,80 @@ ROM const struct {
 	struct usb_endpoint_descriptor_st				cdc_bulk_in;
 } cdc_config_descriptor = {
 	{
-	  sizeof(struct usb_configuration_descriptor_st),	// bLength
-    USB_CONFIGURATION_DESCRIPTOR_TYPE,          // bDescriptorType
-    sizeof(cdc_config_descriptor),              // wTotalLength
-    USB_NUM_INTERFACES,                         // bNumInterfaces
-    0x01,                                       // bConfigurationValue
-    0x00,                                       // iConfiguration (0=none)
-    0x80,                                       // bmAttributes (0x80 = bus powered)
-    0x32                                        // bMaxPower (in 2 mA units, 50=100 mA)
+		sizeof(struct usb_configuration_descriptor_st),	// bLength
+		USB_CONFIGURATION_DESCRIPTOR_TYPE,          // bDescriptorType
+		sizeof(cdc_config_descriptor),              // wTotalLength
+		USB_NUM_INTERFACES,                         // bNumInterfaces
+		0x01,                                       // bConfigurationValue
+		0x00,                                       // iConfiguration (0=none)
+		0x80,                                       // bmAttributes (0x80 = bus powered)
+		0x32                                        // bMaxPower (in 2 mA units, 50=100 mA)
 	},{
-    sizeof(struct usb_interface_descriptor_st), // bLength (Interface0 descriptor starts here)
-    USB_INTERFACE_DESCRIPTOR_TYPE,              // bDescriptorType
-    0x00,                                       // bInterfaceNumber
-    0x00,                                       // bAlternateSetting
-    0x01,                                       // bNumEndpoints (excluding EP0)
-    0x02,                                       // bInterfaceClass (0x00=per endpoint specified, 0xFF=vendor specific)
-    0x02,                                       // bInterfaceSubClass (0x00=per endpoint specified, 0xFF=vendor specific)
-    0x00,                                       // bInterfaceProtocol (0x00=no protocol, 0xFE=as by command set, 0xFF=vendor specific)
-    0x00                                        // iInterface (none)
+		sizeof(struct usb_interface_descriptor_st), // bLength (Interface0 descriptor starts here)
+		USB_INTERFACE_DESCRIPTOR_TYPE,              // bDescriptorType
+		0x00,                                       // bInterfaceNumber
+		0x00,                                       // bAlternateSetting
+		0x01,                                       // bNumEndpoints (excluding EP0)
+		0x02,                                       // bInterfaceClass (0x00=per endpoint specified, 0xFF=vendor specific)
+		0x02,                                       // bInterfaceSubClass (0x00=per endpoint specified, 0xFF=vendor specific)
+		0x00,                                       // bInterfaceProtocol (0x00=no protocol, 0xFE=as by command set, 0xFF=vendor specific)
+		0x00                                        // iInterface (none)
 	},{
-    0x05,                                       // bFunctionLength
-    0x24,                                       // bDescriptorType
-    0x00,                                       // bDescriptorSubtype (CDC header descriptor)
-    0x10,                                       // bcdCDC (low byte)
-    0x01                                        // bcdCDC (high byte)
+		0x05,                                       // bFunctionLength
+		0x24,                                       // bDescriptorType
+		0x00,                                       // bDescriptorSubtype (CDC header descriptor)
+		0x10,                                       // bcdCDC (low byte)
+		0x01                                        // bcdCDC (high byte)
 	},{
-    0x04,                                       // bFunctionLength
-    0x24,                                       // bDescriptorType
-    0x02,                                       // bDescriptorSubtype (CDC abstract control management descriptor)
-    0x02                                        // bmCapabilities
+		0x04,                                       // bFunctionLength
+		0x24,                                       // bDescriptorType
+		0x02,                                       // bDescriptorSubtype (CDC abstract control management descriptor)
+		0x02                                        // bmCapabilities
 	},{
-    0x05,                                       // bFunctionLength
-    0x24,                                       // bDescriptorType
-    0x06,                                       // bDescriptorSubtype (CDC union descriptor)
-    0x00,                                       // bControlInterface
-    0x01                                        // bSubordinateInterface0
+		0x05,                                       // bFunctionLength
+		0x24,                                       // bDescriptorType
+		0x06,                                       // bDescriptorSubtype (CDC union descriptor)
+		0x00,                                       // bControlInterface
+		0x01                                        // bSubordinateInterface0
 	},{
-    0x05,                                       // bFunctionLength
-    0x24,                                       // bDescriptorType
-    0x01,                                       // bDescriptorSubtype (Call management descriptor)
-    0x01,                                       // bmCapabilities
-    0x01                                        // bInterfaceNum
+		0x05,                                       // bFunctionLength
+		0x24,                                       // bDescriptorType
+		0x01,                                       // bDescriptorSubtype (Call management descriptor)
+		0x01,                                       // bmCapabilities
+		0x01                                        // bInterfaceNum
 	},{
-    sizeof(struct usb_endpoint_descriptor_st),  // bLength (Endpoint1 descriptor)
-    USB_ENDPOINT_DESCRIPTOR_TYPE,               // bDescriptorType
-    0x81,                                       // bEndpointAddress
-    0x03,                                       // bmAttributes (0x03=intr)
-    CDC_NOTICE_BUFFER_SIZE,                     // wMaxPacketSize
-    0x40                                        // bInterval
+		sizeof(struct usb_endpoint_descriptor_st),  // bLength (Endpoint1 descriptor)
+		USB_ENDPOINT_DESCRIPTOR_TYPE,               // bDescriptorType
+		0x81,                                       // bEndpointAddress
+		0x03,                                       // bmAttributes (0x03=intr)
+		CDC_NOTICE_BUFFER_SIZE,                     // wMaxPacketSize
+		0x40                                        // bInterval
 	},{
-    sizeof(struct usb_interface_descriptor_st), // bLength (Interface1 descriptor)
-    USB_INTERFACE_DESCRIPTOR_TYPE,              // bDescriptorType
-    0x01,                                       // bInterfaceNumber
-    0x00,                                       // bAlternateSetting
-    0x02,                                       // bNumEndpoints
-    0x0A,                                       // bInterfaceClass
-    0x00,                                       // bInterfaceSubClass
-    0x00,                                       // bInterfaceProtocol (0x00=no protocol, 0xFE=functional unit, 0xFF=vendor specific)
-    0x00                                        // iInterface
+		sizeof(struct usb_interface_descriptor_st), // bLength (Interface1 descriptor)
+		USB_INTERFACE_DESCRIPTOR_TYPE,              // bDescriptorType
+		0x01,                                       // bInterfaceNumber
+		0x00,                                       // bAlternateSetting
+		0x02,                                       // bNumEndpoints
+		0x0A,                                       // bInterfaceClass
+		0x00,                                       // bInterfaceSubClass
+		0x00,                                       // bInterfaceProtocol (0x00=no protocol, 0xFE=functional unit, 0xFF=vendor specific)
+		0x00                                        // iInterface
 	},{
-    sizeof(struct usb_endpoint_descriptor_st),  // bLength (Enpoint2 descriptor)
-    USB_ENDPOINT_DESCRIPTOR_TYPE,               // bDescriptorType
-    0x02,                                       // bEndpointAddress
-    0x02,                                       // bmAttributes (0x02=bulk)
-    CDC_RXTX_BUFFER_SIZE,                       // wMaxPacketSize
-    0x40                                        // bInterval
+		sizeof(struct usb_endpoint_descriptor_st),  // bLength (Enpoint2 descriptor)
+		USB_ENDPOINT_DESCRIPTOR_TYPE,               // bDescriptorType
+		0x02,                                       // bEndpointAddress
+		0x02,                                       // bmAttributes (0x02=bulk)
+		CDC_RXTX_BUFFER_SIZE,                       // wMaxPacketSize
+		0x40                                        // bInterval
 	},{
-    sizeof(struct usb_endpoint_descriptor_st),  // bLength
-    USB_ENDPOINT_DESCRIPTOR_TYPE,               // bDescriptorType
-    0x82,                                       // bEndpointAddress
-    0x02,                                       // bmAttributes (0x02=bulk)
-    CDC_RXTX_BUFFER_SIZE,                       // wMaxPacketSize
-    0x40                                        // bInterval
+		sizeof(struct usb_endpoint_descriptor_st),  // bLength
+		USB_ENDPOINT_DESCRIPTOR_TYPE,               // bDescriptorType
+		0x82,                                       // bEndpointAddress
+		0x02,                                       // bmAttributes (0x02=bulk)
+		CDC_RXTX_BUFFER_SIZE,                       // wMaxPacketSize
+		0x40                                        // bInterval
 	}
-		//, DFU_RUNTIME_DESC
+	//, DFU_RUNTIME_DESC
 };
 
 ROM const USB_STRING_DESCRIPTOR(langid, USB_LANGID_English_United_States);
