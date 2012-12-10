@@ -5,6 +5,7 @@
 *.cof
 *.map
 *.hex
-# Ignore editor backups
+# Ignore editor backups and intermediaries
 *~
+*.swp
 
