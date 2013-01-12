@@ -16,6 +16,24 @@ or send a letter to
 
 #include <p18cxxx.h>
 
+//#define USB_TOKEN_Mask	0b00111100
+//#define USB_TOKEN_OUT	0b00000100
+//#define USB_TOKEN_IN	0b00100100
+//#define USB_TOKEN_SOF	0b00010100
+//#define USB_TOKEN_SETUP	0b00110100
+//#define USB_TOKEN_DATA0	0b00001100
+//#define USB_TOKEN_DATA1	0b00101100
+//#define USB_TOKEN_DATA2	0b00011100		/* High speed isochronous endpoints only */
+//#define USB_TOKEN_MDATA	0b00111100		/* High speed isochronous enpoints and hub devices only */
+//#define USB_TOKEN_ACK	0b00001000
+//#define USB_TOKEN_NAK	0b00101000
+//#define USB_TOKEN_STALL	0b00111000
+//#define USB_TOKEN_NYET	0b00011000		/* High speed devices only */
+//#define USB_TOKEN_PRE	0b00110000
+//#define USB_TOKEN_ERR	0b00110000
+//#define USB_TOKEN_SPLIT	0b00100000		/* Hub devices only */
+//#define USB_TOKEN_PING	0b00010000		/* High speed devices only */
+
 /* Bitmasks */
 #define USB_UEP_EPHSHK 		(0x10)
 #define USB_UEP_EPCONDIS	(0x08)
@@ -112,17 +130,18 @@ typedef unsigned char usb_status_t;
 #define USB_USTAT_FIFO_DEPTH				4u
 
 typedef struct BDENTRY {
-	volatile unsigned char
-/*	struct {
-		unsigned BCH:2;
-		unsigned BSTALL:1;
-		unsigned DTSEN:1;
-		unsigned INCDIS:1;
-		unsigned KEN:1;
-		unsigned DTS:1;
-		unsigned UOWN:1;
-	}*/
-	          BDSTAT;
+    	union {
+		struct {
+			unsigned BC89:2;
+			unsigned BSTALL:1;
+			unsigned DTSEN:1;
+			unsigned INCDIS:1;
+			unsigned KEN:1;
+			unsigned DTS:1;
+			unsigned UOWN:1;
+		}
+		volatile unsigned char BDSTAT;
+	}
 	volatile unsigned char BDCNT;
 	unsigned char *BDADDR;
 } BDentry;

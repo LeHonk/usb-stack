@@ -60,7 +60,7 @@ products.
  */
 #define USB_PP_BUF_MODE 0
 
-#define USB_EP0_BUFFER_SIZE 8u
+#define USB_EP0_BUFFER_SIZE 64u
 #define CDC_NOTICE_BUFFER_SIZE 10u
 #define CDC_RXTX_BUFFER_SIZE 32u
 #define USB_MAX_BUFFER_SIZE	32u

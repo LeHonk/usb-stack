@@ -3,15 +3,12 @@
 #
 # $Id: Makefile.include 81 2012-07-10 22:47:59Z tomhol $
 #
+CC_PREFIX ?= pic30
 
-CC	:= pic30-gcc
-LD	:= pic30-gcc
-AS	:= pic30-as
-HX	:= pic30-bin2hex
-#CC	:= xc16-gcc
-#LD	:= xc16-gcc
-#AS	:= xc16-as
-#HX	:= xc16-bin2hex
+CC	:= $(CC_PREFIX)-gcc
+LD	:= $(CC_PREFIX)-gcc
+AS	:= $(CC_PREFIX)-as
+HX	:= $(CC_PREFIX)-bin2hex
 
 LIBFLAGS := --start-group \
 		$(patsubst lib%,-l%,$(LIBS)) \
@@ -29,7 +26,7 @@ DEBUG ?= 1
 ifeq ($(DEBUG), 1)
 CFLAGS += -g --debug -D__DEBUG
 else
-CFLAGS += -DNDEBUG
+CFLAGS += -DNDEBUG -ffunction-sections -fdata-sections
 endif
 
 comma:= ,

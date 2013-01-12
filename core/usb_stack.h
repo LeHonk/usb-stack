@@ -16,64 +16,90 @@ or send a letter to
 
 #include <stdint.h>
 
-#define USB_TOKEN_Mask	0b00111100
-#define USB_TOKEN_OUT	0b00000100
-#define USB_TOKEN_IN	0b00100100
-#define USB_TOKEN_SOF	0b00010100
-#define USB_TOKEN_SETUP	0b00110100
-#define USB_TOKEN_DATA0	0b00001100
-#define USB_TOKEN_DATA1	0b00101100
-#define USB_TOKEN_DATA2	0b00011100		/* High speed isochronous endpoints only */
-#define USB_TOKEN_MDATA	0b00111100		/* High speed isochronous enpoints and hub devices only */
-#define USB_TOKEN_ACK	0b00001000
-#define USB_TOKEN_NAK	0b00101000
-#define USB_TOKEN_STALL	0b00111000
-#define USB_TOKEN_NYET	0b00011000		/* High speed devices only */
-#define USB_TOKEN_PRE	0b00110000
-#define USB_TOKEN_ERR	0b00110000
-#define USB_TOKEN_SPLIT	0b00100000		/* Hub devices only */
-#define USB_TOKEN_PING	0b00010000		/* High speed devices only */
+#define USB_TOKEN_OUT	0b0001
+#define USB_TOKEN_IN	0b1001
+#define USB_TOKEN_SOF	0b0101
+#define USB_TOKEN_SETUP	0b1101
+#define USB_TOKEN_DATA0	0b0011
+#define USB_TOKEN_DATA1	0b1011
+#define USB_TOKEN_DATA2	0b0111		/* High speed isochronous endpoints only */
+#define USB_TOKEN_MDATA	0b1111		/* High speed isochronous enpoints and hub devices only */
+#define USB_TOKEN_ACK	0b0010
+#define USB_TOKEN_NAK	0b1010
+#define USB_TOKEN_STALL	0b1110
+#define USB_TOKEN_NYET	0b0110		/* High speed devices only */
+#define USB_TOKEN_PRE	0b1100
+#define USB_TOKEN_ERR	0b1100
+#define USB_TOKEN_SPLIT	0b1000		/* Hub devices only */
+#define USB_TOKEN_PING	0b0100		/* High speed devices only */
 
-/* Descriptor Types */
-#define USB_DEVICE_DESCRIPTOR_TYPE					 					1u
-#define USB_CONFIGURATION_DESCRIPTOR_TYPE			 				2u
-#define USB_STRING_DESCRIPTOR_TYPE					 					3u
-#define USB_INTERFACE_DESCRIPTOR_TYPE				 					4u
-#define USB_ENDPOINT_DESCRIPTOR_TYPE				 					5u
-#define USB_DEVICE_QUALIFIER_DESCRIPTOR_TYPE		 			6u
-#define USB_OTHER_SPEED_CONFIGURATION_DESCRIPTOR_TYPE	7u
-#define USB_INTERFACE_POWER_DESCRIPTOR_TYPE			 			8u
-#define USB_OTG_DESCRIPTOR_TYPE						 						9u
-#define USB_DEBUG_DESCRIPTOR_TYPE											10u
-#define USB_INTERFACE_ASSOCIATION_DESCRIPTOR_TYPE			11u
-#define USB_HID_DESCRIPTOR_TYPE												0x21
-#define USB_HID_REPORT_DESCRIPTOR_TYPE								0x22
+/* Device Requests */
+typedef struct USB_DEVICE_REQUEST {
+	struct {
+		unsigned char bmRequestType;
+		unsigned char bRequest;
+		unsigned int wValue;
+		union {
+			unsigned int wIndex;
+			unsigned char bInterface;
+			unsigned char bEndpoint;
+		};
+		unsigned int wLength;
+	};
+} usb_device_request_t;
 
-#define USB_bmRequestType			0
-#define USB_bRequest					1
-#define USB_wValue						2
-#define USB_bDescriptorIndex	2
-#define USB_wValueHigh				3
-#define USB_bDescriptorType		3
-#define	USB_wIndex						4
-#define USB_bInterface				4
-#define USB_wIndexHigh				5
-#define USB_wLength						6
-#define	USB_wLengthHigh				7
-#define USB_bData							8
+//#define USB_bmRequestType				0
+//#define USB_bRequest					1
+//#define USB_wValue					2
+//#define USB_bDescriptorIndex				2
+//#define USB_wValueHigh					3
+//#define USB_bDescriptorType				3
+//#define USB_wIndex					4
+//#define USB_bInterface					4
+//#define USB_wIndexHigh					5
+//#define USB_wLength					6
+//#define USB_wLengthHigh					7
+//#define USB_bData					8
 
 #define USB_bmRequestType_PhaseMask			0b10000000
-#define USB_bmRequestType_H2D						0b00000000
-#define USB_bmRequestType_D2H						0b10000000
+#define USB_bmRequestType_H2D				0b00000000
+#define USB_bmRequestType_D2H				0b10000000
 #define USB_bmRequestType_TypeMask			0b01100000
 #define USB_bmRequestType_Standard			0b00000000
-#define USB_bmRequestType_Class					0b00100000
-#define USB_bmRequestType_Vendor				0b01000000
-#define USB_bmRequestType_RecipientMask	0b00000011
-#define USB_bmRequestType_Device				0b00000000
+#define USB_bmRequestType_Class				0b00100000
+#define USB_bmRequestType_Vendor			0b01000000
+#define USB_bmRequestType_RecipientMask			0b00000011
+#define USB_bmRequestType_Device			0b00000000
 #define USB_bmRequestType_Interface			0b00000001
 #define USB_bmRequestType_Endpoint			0b00000010
-#define USB_bmRequestType_Other					0b00000011
+#define USB_bmRequestType_Other				0b00000011
+
+#define USB_REQUEST_GET_STATUS			0
+#define USB_REQUEST_CLEAR_FEATURE		1
+#define USB_REQUEST_SET_FEATURE			3
+#define USB_REQUEST_SET_ADDRESS			5
+#define USB_REQUEST_GET_DESCRIPTOR		6
+#define USB_REQUEST_SET_DESCRIPTOR		7
+#define USB_REQUEST_GET_CONFIGURATION		8
+#define USB_REQUEST_SET_CONFIGURATION		9
+#define USB_REQUEST_GET_INTERFACE		10
+#define USB_REQUEST_SET_INTERFACE		11
+#define USB_REQUEST_SYNCH_FRAME			12
+
+/* Descriptor Types */
+#define USB_DEVICE_DESCRIPTOR_TYPE			1u
+#define USB_CONFIGURATION_DESCRIPTOR_TYPE		2u
+#define USB_STRING_DESCRIPTOR_TYPE			3u
+#define USB_INTERFACE_DESCRIPTOR_TYPE			4u
+#define USB_ENDPOINT_DESCRIPTOR_TYPE			5u
+#define USB_DEVICE_QUALIFIER_DESCRIPTOR_TYPE		6u
+#define USB_OTHER_SPEED_CONFIGURATION_DESCRIPTOR_TYPE	7u
+#define USB_INTERFACE_POWER_DESCRIPTOR_TYPE		8u
+#define USB_OTG_DESCRIPTOR_TYPE				9u
+#define USB_DEBUG_DESCRIPTOR_TYPE			10u
+#define USB_INTERFACE_ASSOCIATION_DESCRIPTOR_TYPE	11u
+#define USB_HID_DESCRIPTOR_TYPE				0x21
+#define USB_HID_REPORT_DESCRIPTOR_TYPE			0x22
 
 struct usb_descriptor_st {
 	uint8_t  bLength;
@@ -133,7 +159,7 @@ struct usb_hid_descriptor_st {
   uint8_t  bLength;               /* Size of this descriptor in bytes */
   uint8_t  bDescriptorType;       /* HID descriptor type */
   uint16_t bcdHID;                /* Binay Coded Decimal Spec. release */
-	uint8_t  bCountryCode;          /* Hardware target country */
+  uint8_t  bCountryCode;          /* Hardware target country */
   uint8_t  bNumDescriptors;       /* Number of HID class descriptors to follow */
   uint8_t  bRDescriptorType;      /* Report descriptor type */
   uint16_t wDescriptorLength;     /* Total length of Report descriptor */
@@ -152,36 +178,24 @@ struct usb_langid_string_descriptor_st {
 };
 
 #define USB_STR_DESC_LENGTH(...)  (sizeof((int[]){0, ##__VA_ARGS__})/sizeof(int)-1)
-#define USB_STRING_DESCRIPTOR(name,...)								\
-struct {																							\
-	uint8_t  bLength;																		\
-	uint8_t  bDescriptorType;														\
+#define USB_STRING_DESCRIPTOR(name,...)				\
+struct {							\
+	uint8_t  bLength;					\
+	uint8_t  bDescriptorType;				\
 	uint16_t string[USB_STR_DESC_LENGTH(__VA_ARGS__)];	\
-} name = {																						\
-	2*USB_STR_DESC_LENGTH(__VA_ARGS__)+2,								\
-	USB_STRING_DESCRIPTOR_TYPE,													\
-	{ __VA_ARGS__ }																			\
+} name = {							\
+	2*USB_STR_DESC_LENGTH(__VA_ARGS__)+2,			\
+	USB_STRING_DESCRIPTOR_TYPE,				\
+	{ __VA_ARGS__ }						\
 }
 
 /* struct usb_descriptor_collection_st {
- * 	const struct usb_device_descriptor				*device;
+ * 	const struct usb_device_descriptor		*device;
  * 	const struct usb_configuration_descriptor	*configuration;
- * 	const struct usb_string_descriptor 				**strings;
- * 	const int																	num_strings;
+ * 	const struct usb_string_descriptor 		**strings;
+ * 	const int					num_strings;
  * };
  */
-
-#define USB_REQUEST_GET_STATUS			0
-#define USB_REQUEST_CLEAR_FEATURE		1
-#define USB_REQUEST_SET_FEATURE			3
-#define USB_REQUEST_SET_ADDRESS			5
-#define USB_REQUEST_GET_DESCRIPTOR		6
-#define USB_REQUEST_SET_DESCRIPTOR		7
-#define USB_REQUEST_GET_CONFIGURATION	8
-#define USB_REQUEST_SET_CONFIGURATION	9
-#define USB_REQUEST_GET_INTERFACE		10
-#define USB_REQUEST_SET_INTERFACE		11
-#define USB_REQUEST_SYNCH_FRAME			12
 
 #include "usb_lang.h"
 
@@ -247,14 +261,6 @@ extern BDentry usb_bdt[];
 #error "USB_MAX_BUFFER_SIZE needs to be 8, 16, 32 or 64 bytes"
 #endif
 
-typedef struct USB_DEVICE_REQUEST {
-	unsigned char bmRequestType;
-	unsigned char bRequest;
-	unsigned int wValue;
-	unsigned int wIndex;
-	unsigned int wLength;
-} usb_device_request_t;
-
 extern usb_status_t trn_status;
 
 extern BDentry *bdp, *rbdp;
@@ -264,9 +270,9 @@ extern BDentry *bdp, *rbdp;
 
 void
 usb_init ( ROM const struct usb_device_descriptor_st *device_descriptor,
-					 ROM const struct usb_configuration_descriptor_st *configuration_descriptor,
-					 ROM const struct usb_string_descriptor_st **string_descriptors,
-					 int num_strings );
+	ROM const struct usb_configuration_descriptor_st *configuration_descriptor,
+	ROM const struct usb_string_descriptor_st **string_descriptors,
+	int num_strings );
 
 void usb_start ( void );
 
@@ -276,19 +282,21 @@ usb_handler_t usb_register_sof_handler ( usb_handler_t handler );
 
 usb_handler_t usb_register_reset_handler ( usb_handler_t handler );
 
-usb_handler_t
-usb_register_class_setup_handler ( unsigned char
-																	 interface_num,
-																	 usb_handler_t
-																	 handler );
+usb_handler_t usb_register_class_setup_handler ( unsigned char
+	interface_num,
+	usb_handler_t
+	handler );
+
 usb_handler_t usb_register_vendor_setup_handler ( usb_handler_t
-							 handler );
+	handler );
+
 void usb_register_endpoint ( unsigned int endpoint, usb_uep_t type,
-				    unsigned int buffer_size,
-				    unsigned char *out_buffer,
-				    unsigned char *in_buffer,
-				    usb_handler_t out_handler,
-				    usb_handler_t in_handler );
+	unsigned int buffer_size,
+	unsigned char *out_buffer,
+	unsigned char *in_buffer,
+	usb_handler_t out_handler,
+	usb_handler_t in_handler );
+
 void usb_set_in_handler ( int ep, usb_handler_t handler );
 
 void usb_set_out_handler ( int ep, usb_handler_t handler );

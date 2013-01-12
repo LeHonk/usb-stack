@@ -131,10 +131,11 @@ usb_init ( ROM const struct usb_device_descriptor_st *device,
 #if USB_PP_BUF_MODE == 0
 		usb_bdt[USB_CALC_BD( i, USB_DIR_OUT, USB_PP_EVEN )].BDCNT = endpoints[i].buffer_size;
 		usb_bdt[USB_CALC_BD( i, USB_DIR_OUT, USB_PP_EVEN )].BDADDR = endpoints[i].out_buffer;
-		usb_bdt[USB_CALC_BD( i, USB_DIR_OUT, USB_PP_EVEN )].BDSTAT = UOWN + DTSEN;
+		usb_bdt[USB_CALC_BD( i, USB_DIR_OUT, USB_PP_EVEN )].UOWN = 1;
+		usb_bdt[USB_CALC_BD( i, USB_DIR_OUT, USB_PP_EVEN )].DTSEN = 1;
 		usb_bdt[USB_CALC_BD( i, USB_DIR_IN, USB_PP_EVEN )].BDCNT = 0;
 		usb_bdt[USB_CALC_BD( i, USB_DIR_IN, USB_PP_EVEN )].BDADDR = endpoints[i].in_buffer;
-		usb_bdt[USB_CALC_BD( i, USB_DIR_IN, USB_PP_EVEN )].BDSTAT = DTS;	// Set DTS => First packet inverts, ie. is Data0
+		usb_bdt[USB_CALC_BD( i, USB_DIR_IN, USB_PP_EVEN )].DTS = 1;	// Set DTS => First packet inverts, ie. is Data0
 #else
 		// TODO: Implement Ping-Pong buffering setup.
 #error "PP Mode not implemented yet"
@@ -239,8 +240,8 @@ usb_handle_reset( void )
 	usb_addr_pending = 0x00;
 
 	for ( i = 0; USB_TRANSACTION_FLAG || i < USB_USTAT_FIFO_DEPTH; i++ ) {	// Must poll TRN Flag and clear, then wait 6 cycles. for next flag set. --JTR
-    ClearUsbInterruptFlag( USB_TRN );           // Advance USTAT FIFO to clear
-		Nop();																			// Delay 6 cycles
+		ClearUsbInterruptFlag( USB_TRN );           // Advance USTAT FIFO to clear
+                Nop();                          // Delay 6 cycles
 		Nop();
 		Nop();
 		Nop();
@@ -249,9 +250,9 @@ usb_handle_reset( void )
 	}
 
 	for ( i = 0; i < USB_ARCH_NUM_EP; i++ )
-    USB_UEP[i] = 0;                             // Disable all endpoints
+                USB_UEP[i] = 0;                 // Disable all endpoints
 
-  SetUsbAddress( 0 );                           // After reset we don't have an address
+        SetUsbAddress( 0 );                     // After reset we don't have an address
 	ClearAllUsbInterruptFlags();
 	ClearAllUsbErrorInterruptFlags();
 
@@ -262,10 +263,11 @@ usb_handle_reset( void )
 #if USB_PP_BUF_MODE == 0
 		usb_bdt[USB_CALC_BD( i, USB_DIR_OUT, USB_PP_EVEN )].BDCNT = endpoints[i].buffer_size;
 		usb_bdt[USB_CALC_BD( i, USB_DIR_OUT, USB_PP_EVEN )].BDADDR = endpoints[i].out_buffer;
-		usb_bdt[USB_CALC_BD( i, USB_DIR_OUT, USB_PP_EVEN )].BDSTAT = UOWN + DTSEN;
+		usb_bdt[USB_CALC_BD( i, USB_DIR_OUT, USB_PP_EVEN )].UOWN = 1;
+		usb_bdt[USB_CALC_BD( i, USB_DIR_OUT, USB_PP_EVEN )].DTSEN = 1;
 		usb_bdt[USB_CALC_BD( i, USB_DIR_IN, USB_PP_EVEN )].BDCNT = 0;
 		usb_bdt[USB_CALC_BD( i, USB_DIR_IN, USB_PP_EVEN )].BDADDR = endpoints[i].in_buffer;
-		usb_bdt[USB_CALC_BD( i, USB_DIR_IN, USB_PP_EVEN )].BDSTAT = DTS;	// Set DTS => First packet inverts, ie. is Data0
+		usb_bdt[USB_CALC_BD( i, USB_DIR_IN, USB_PP_EVEN )].DTS = 1;	// Set DTS => First packet inverts, ie. is Data0
 #else
 		// TODO: Implement Ping-Pong buffering setup.
 #error "PP Mode not implemented yet"
@@ -279,14 +281,14 @@ void
 usb_handle_transaction( void )
 {
 
-	trn_status = GetUsbTransaction (  );
+	trn_status = GetUsbTransaction();
 	bdp = &usb_bdt[USB_USTAT2BD( trn_status )];
 	rbdp = &usb_bdt[USB_CALC_BD( USB_USTAT2EP( trn_status ),
-                               USB_DIR_IN,      // All replies in IN direction
-				      								 USB_PP_EVEN )];	// TODO: Implement Ping-Pong buffering
+				USB_DIR_IN,      // All replies in IN direction
+				USB_PP_EVEN )];	// TODO: Implement Ping-Pong buffering
 
-	DPRINTF("USTAT: 0x%02X PID 0x%02X DATA%c ", trn_status, bdp->BDSTAT % USB_TOKEN_Mask, (bdp->BDSTAT & 0x40)?'1':'0');
-	switch ( bdp->BDSTAT & USB_TOKEN_Mask ) {
+	DPRINTF("USTAT: 0x%02X PID 0x%02X DATA%c ", trn_status, bdp->PID, (bdp->DTS)?'1':'0');
+	switch ( bdp->PID ) {
 	case USB_TOKEN_SETUP:
 		usb_handle_setup();
 		break;
@@ -305,11 +307,17 @@ usb_handle_transaction( void )
 void
 usb_handle_setup( void )
 {
-	DPRINTF ( "bmReqType 0x%02X ", bdp->BDADDR[USB_bmRequestType] );
-	rbdp->BDSTAT = DTSEN;			// Reclaim reply buffer
-	switch ( bdp->BDADDR[USB_bmRequestType] & USB_bmRequestType_TypeMask ) {
+	usb_device_request_t *packet = (usb_device_request_t *) bdp->BDADDR;
+//	DPRINTF( "bmReqType 0x%02X ", packet->bmRequestType );
+	DPRINTF( "SETUP " );
+	int i;
+	for (i=0; i<8; i++)
+	    DPRINTF( "0x%02X ", bdp->BDADDR[i] );
+	DPRINTF( "\n" )
+//	rbdp->DTSEN = 0;			// Reclaim reply buffer
+	switch ( packet->bmRequestType & USB_bmRequestType_TypeMask ) {
 	case USB_bmRequestType_Standard:
-		switch ( bdp->BDADDR[USB_bmRequestType] & USB_bmRequestType_RecipientMask ) {
+		switch ( packet->bmRequestType & USB_bmRequestType_RecipientMask ) {
 		case USB_bmRequestType_Device:
 			usb_handle_StandardDeviceRequest( bdp );
 			break;
@@ -324,9 +332,8 @@ usb_handle_setup( void )
 		}
 		break;
 	case USB_bmRequestType_Class:
-		if ( USB_NUM_INTERFACES > bdp->BDADDR[USB_bInterface]
-		     && class_setup_handler[bdp->BDADDR[USB_bInterface]] )
-			class_setup_handler[bdp->BDADDR[USB_bInterface]]();
+		if ( USB_NUM_INTERFACES > packet->bInterface && class_setup_handler[packet->bInterface] )
+			class_setup_handler[packet->bInterface]();
 		else
 			usb_RequestError();
 		break;
@@ -342,13 +349,9 @@ usb_handle_setup( void )
 	/* Prepare endpoint for new reception */
 	bdp->BDCNT = endpoints[USB_USTAT2EP( trn_status )].buffer_size;
 	// TODO: Better DataToggleSyncronization algorithm, according to JTR.
-	// Suggestion to look at MC stack is probably bad as this stack is Microchip USB stack agnostic
-	bdp->BDSTAT =
-		( !
-		  ( bdp->
-		    BDADDR[USB_bmRequestType] & USB_bmRequestType_PhaseMask )
-&& ( bdp->BDADDR[USB_wLength]
-     || bdp->BDADDR[USB_wLengthHigh] ) ) ? UOWN + DTS + DTSEN : UOWN + DTSEN;
+	bdp->DTS = 1;
+	bdp->DTSEN = 1;
+	bdp->UOWN = 1;
 	// JTR Note. that CONTROL IN and OUT DATA packet transfers do not come back here and there is no
 	// univesal way and place of setting up EP0 after these DATA transfers in this stack.
 	// JTR Note. that there is a PIC18 silicon errata issue that this does not address by being here.  See DS80220F-page 6
@@ -366,14 +369,18 @@ usb_handle_StandardDeviceRequest( BDentry * bdp )
 		rbdp->BDADDR[0] = usb_device_status & 0xFF;
 		rbdp->BDADDR[1] = usb_device_status >> 8;
 		rbdp->BDCNT = 2;
-		rbdp->BDSTAT = UOWN + DTS + DTSEN;
+		rbdp->DTS = 1;
+		rbdp->DTSEN = 1;
+		rbdp->UOWN = 1;
 		DPRINTF( "DEV Get_Status\n" );
 		break;
 	case USB_REQUEST_CLEAR_FEATURE:
 		if ( 0x0001u == packet->wValue ) {	// TODO: Remove magic (REMOTE_WAKEUP_FEATURE)
 			usb_device_status &= ~0x0002;
 			rbdp->BDCNT = 0;
-			rbdp->BDSTAT = UOWN + DTS + DTSEN;
+			rbdp->DTS = 1;
+			rbdp->DTSEN = 1;
+			rbdp->UOWN = 1;
 			DPRINTF( "DEV Clear_Feature 0x%04X\n", packet->wValue );
 		} else
 			usb_RequestError();
@@ -382,7 +389,9 @@ usb_handle_StandardDeviceRequest( BDentry * bdp )
 		if ( 0x0001u == packet->wValue ) {	// TODO: Remove magic (REMOTE_WAKEUP_FEATURE)
 			usb_device_status |= 0x0002;
 			rbdp->BDCNT = 0;
-			rbdp->BDSTAT = UOWN + DTS + DTSEN;
+			rbdp->DTS = 1;
+			rbdp->DTSEN = 1;
+			rbdp->UOWN = 1;
 			DPRINTF( "DEV Set_Feature 0x%04X\n", packet->wValue );
 		} else
 			usb_RequestError();
@@ -391,7 +400,9 @@ usb_handle_StandardDeviceRequest( BDentry * bdp )
 		if ( 0x007Fu >= packet->wValue ) {
 			usb_addr_pending = (uint8_t) packet->wValue;
 			rbdp->BDCNT = 0;
-			rbdp->BDSTAT = UOWN + DTS + DTSEN;
+			rbdp->DTS = 1;
+			rbdp->DTSEN = 1;
+			rbdp->UOWN = 1;
 			usb_set_in_handler( 0, usb_set_address );
 			DPRINTF( "DEV Set address 0x%02X\n", usb_addr_pending );
 		} else
@@ -436,7 +447,9 @@ usb_handle_StandardDeviceRequest( BDentry * bdp )
 	case USB_REQUEST_GET_CONFIGURATION:
 		rbdp->BDADDR[0] = usb_configured;
 		rbdp->BDCNT = 1;
-		rbdp->BDSTAT = UOWN + DTS + DTSEN;
+		rbdp->DTS = 1;
+		rbdp->DTSEN = 1;
+		rbdp->UOWN = 1;
 		DPRINTF ( "DEV Get_Config\n" );
 		break;
 	case USB_REQUEST_SET_CONFIGURATION:
@@ -450,9 +463,12 @@ usb_handle_StandardDeviceRequest( BDentry * bdp )
 				/* Configure buffer descriptors */
 #if USB_PP_BUF_MODE == 0
 				usb_bdt[USB_CALC_BD( i, USB_DIR_OUT, USB_PP_EVEN )].BDCNT = endpoints[i].buffer_size;
-				usb_bdt[USB_CALC_BD( i, USB_DIR_OUT, USB_PP_EVEN )].BDSTAT = UOWN + DTSEN;
+				usb_bdt[USB_CALC_BD( i, USB_DIR_OUT, USB_PP_EVEN )].DTS = 0;
+				usb_bdt[USB_CALC_BD( i, USB_DIR_OUT, USB_PP_EVEN )].DTSEN = 1;
+				usb_bdt[USB_CALC_BD( i, USB_DIR_OUT, USB_PP_EVEN )].UOWN = 1;
 				usb_bdt[USB_CALC_BD( i, USB_DIR_IN, USB_PP_EVEN )].BDCNT = 0;
-				usb_bdt[USB_CALC_BD( i, USB_DIR_IN, USB_PP_EVEN )].BDSTAT = DTS + DTSEN;	// Set DTS => First packet inverts, ie. is Data0
+				usb_bdt[USB_CALC_BD( i, USB_DIR_IN, USB_PP_EVEN )].DTS = 1;	// Set DTS => First packet inverts, ie. is Data0
+				usb_bdt[USB_CALC_BD( i, USB_DIR_IN, USB_PP_EVEN )].DTSEN = 1;
 #else
 				// TODO: Implement Ping-Pong buffering setup.
 #error "PP Mode not implemented yet"
@@ -460,7 +476,9 @@ usb_handle_StandardDeviceRequest( BDentry * bdp )
 			}
 			usb_configured = LOWB(packet->wValue);
 			rbdp->BDCNT = 0;
-			rbdp->BDSTAT = UOWN + DTS + DTSEN;
+			rbdp->DTS = 1;
+			rbdp->DTSEN = 1;
+			rbdp->UOWN = 1;
 			DPRINTF( "DEV Set_Config 0x%04X\n", packet->wValue );
 		} else
 			usb_RequestError();
@@ -474,33 +492,39 @@ usb_handle_StandardDeviceRequest( BDentry * bdp )
 void
 usb_handle_StandardInterfaceRequest( BDentry * bdp )
 {
-	unsigned char *packet = bdp->BDADDR;
+	usb_device_request_t *packet = (usb_device_request_t *) bdp->BDADDR;
 
-	switch ( packet[USB_bRequest] ) {
+	switch ( packet->bRequest ) {
 	case USB_REQUEST_GET_STATUS:
 		rbdp->BDADDR[0] = 0x00;
 		rbdp->BDADDR[1] = 0x00;
 		rbdp->BDCNT = 2;
-		rbdp->BDSTAT = UOWN + DTS + DTSEN;
+		rbdp->DTS = 1;
+		rbdp->DTSEN = 1;
+		rbdp->UOWN = 1;
 		DPRINTF( "IF Get_Status\n" );
 		break;
 	case USB_REQUEST_GET_INTERFACE:
-		if ( USB_NUM_INTERFACES > packet[USB_bInterface] ) {
+		if ( USB_NUM_INTERFACES > packet->bInterface ) {
 			// TODO: Implement alternative interfaces, or move responsibility to class/vendor functions.
 			rbdp->BDADDR[0] = 0;
 			rbdp->BDCNT = 1;
-			rbdp->BDSTAT = UOWN + DTS + DTSEN;
+			rbdp->DTS = 1;
+			rbdp->DTSEN = 1;
+			rbdp->UOWN = 1;
 			DPRINTF( "IF Get_Interface\n" );
 		} else
 			usb_RequestError();
 		break;
 	case USB_REQUEST_SET_INTERFACE:
-		if ( USB_NUM_INTERFACES > packet[USB_bInterface] && 0u == packet[USB_wValue] ) {
+		if ( USB_NUM_INTERFACES > packet->bInterface && 0u == packet->wValue ) {
 			// TODO: Implement alternative interfaces...
 			rbdp->BDCNT = 0;
-			rbdp->BDSTAT = UOWN + DTS + DTSEN;
+			rbdp->DTS = 1;
+			rbdp->DTSEN = 1;
+			rbdp->UOWN = 1;
 			DPRINTF( "IF Set_Interface 0x%2X\n",
-				  packet[USB_bInterface] );
+				  packet->bInterface );
 		} else
 			usb_RequestError();
 		break;
@@ -514,14 +538,15 @@ usb_handle_StandardInterfaceRequest( BDentry * bdp )
 void
 usb_handle_StandardEndpointRequest( BDentry * bdp )
 {
-	unsigned char *packet;
 	unsigned char epnum;
 	unsigned char dir;
 	BDentry  *epbd;
 
-	packet = bdp->BDADDR;
+	usb_device_request_t *packet = (usb_device_request_t *) bdp->BDADDR;
 
-	switch ( packet[USB_bRequest] ) {
+	epnum = packet->bEndpoint & 0x0F;
+	dir = packet->bEndpoint >> 7;
+	switch ( packet->bRequest ) {
 	case USB_REQUEST_GET_STATUS:
 		/* JTR this code block is (was?) not correct. It is a throw back to the 16C765
 		   stack where the STALL status was B0 in the UEPx. As it is the EPSTALL
@@ -529,17 +554,17 @@ usb_handle_StandardEndpointRequest( BDentry * bdp )
 		   Instead we will use the STALL bits in the BD table. */
 		/* Honken: So this get_status is for the host to check if feature (ENDPOINT_HALT) is set?
 		   I had missunderstood it to check if a stall acctually had occured */
-		epnum = packet[USB_wIndex] & 0x0F;
-		dir = packet[USB_wIndex] >> 7;
 		epbd = &usb_bdt[USB_CALC_BD ( epnum, dir, USB_PP_EVEN )];
-		rbdp->BDADDR[0] = ( epbd->BDSTAT & BSTALL ) ? 0x01 : 0x00;
+		rbdp->BDADDR[0] = ( epbd->BSTALL ) ? 0x01 : 0x00;
 #if USB_PP_BUF_MODE > 0
 		epbd = &usb_bdt[USB_CALC_BD ( epnum, dir, USB_PP_ODD )];
-		rbdp->BDADDR[0] |= ( epbd->BDSTAT & BSTALL ) ? 0x01 : 0x00;
+		rbdp->BDADDR[0] |= ( epbd->BSTALL ) ? 0x01 : 0x00;
 #endif
 		rbdp->BDADDR[1] = 0x00;
 		rbdp->BDCNT = 2;
-		rbdp->BDSTAT = UOWN + DTS + DTSEN;
+		rbdp->DTS = 1;
+		rbdp->DTSEN = 1;
+		rbdp->UOWN = 1;
 		DPRINTF ( "EP Get_Status\n" );
 		break;
 	case USB_REQUEST_CLEAR_FEATURE:
@@ -549,35 +574,35 @@ usb_handle_StandardEndpointRequest( BDentry * bdp )
 		   As it is this really is an application event and there should be a 
 		   call back and protocol for handling the possible lost of a data packet. */
 		// TODO: Ping-Pong support.
-		epnum = packet[USB_wIndex] & 0x0F;
-		dir = packet[USB_wIndex] >> 7;
 		epbd = &usb_bdt[USB_CALC_BD ( epnum, dir, USB_PP_EVEN )];
-		epbd->BDSTAT &= ~BSTALL;
+		epbd->BSTALL = 0;
 		if ( dir )
-			epbd->BDSTAT |= DTS;	// JTR added IN EP set DTS as it will be toggled to zero next transfer
+			epbd->DTS = 1;	// JTR added IN EP set DTS as it will be toggled to zero next transfer
 		else
-			epbd->BDSTAT &= ~DTS;
+			epbd->DTS = 0;
 #if USB_PP_BUF_MODE > 0
 		epbd = &usb_bdt[USB_CALC_BD ( epnum, dir, USB_PP_ODD )];
-		epbd->BDSTAT &= ~BSTALL;
+		epbd->BSTALL = 0;
 		// TODO: Reset data toggling to correct sync
 #endif
 		rbdp->BDCNT = 0;
-		rbdp->BDSTAT = UOWN + DTS + DTSEN;
-		DPRINTF( "EP Clear_Feature 0x%02X\n", packet[USB_wIndex] );
+		rbdp->DTS = 1;
+		rbdp->DTSEN = 1;
+		rbdp->UOWN = 1;
+		DPRINTF( "EP 0x%02X Clear_Feature 0x%04X\n", packet->bEndpoint, packet->wValue );
 		break;
 	case USB_REQUEST_SET_FEATURE:
-		epnum = packet[USB_wIndex] & 0x0F;
-		dir = packet[USB_wIndex] >> 7;
 		epbd = &usb_bdt[USB_CALC_BD( epnum, dir, USB_PP_EVEN )];
-		epbd->BDSTAT |= BSTALL;
+		epbd->BSTALL = 1;
 #if USB_PP_BUF_MODE > 0
 		epbd = &usb_bdt[USB_CALC_BD( epnum, dir, USB_PP_ODD )];
-		epbd->BDSTAT |= BSTALL;
+		epbd->BSTALL = 1;
 #endif
 		rbdp->BDCNT = 0;
-		rbdp->BDSTAT = UOWN + DTS + DTSEN;
-		DPRINTF( "EP Set_Feature 0x%02X\n", packet[USB_wIndex] );
+		rbdp->DTS = 1;
+		rbdp->DTSEN = 1;
+		rbdp->UOWN = 1;
+		DPRINTF( "EP 0x%02X Set_Feature 0x%04X\n", packet->bEndpoint, packet->wValue );
 		break;
 	case USB_REQUEST_SYNCH_FRAME:
 	default:
@@ -588,23 +613,23 @@ usb_handle_StandardEndpointRequest( BDentry * bdp )
 void
 usb_handle_in( void )
 {
-	DPRINTF("In  EP: %u Handler: 0x%p\t", trn_status >> 3, endpoints[USB_USTAT2EP(trn_status)].in_handler);
+	DPRINTF("In  EP: %u Handler: 0x%p\t", USB_USTAT2EP(trn_status), endpoints[USB_USTAT2EP(trn_status)].in_handler);
 	if ( endpoints[USB_USTAT2EP( trn_status )].in_handler ) {
 		endpoints[USB_USTAT2EP( trn_status )].in_handler();
 	} else {
-//              DPRINTF("No handler\n");
+		DPRINTF("No handler\n");
 	}
 }
 
 void
 usb_handle_out( void )
 {
-	DPRINTF("Out EP: %u Handler: 0x%p\t", trn_status >> 3, endpoints[USB_USTAT2EP(trn_status)].out_handler);
+	DPRINTF("Out EP: %u Handler: 0x%p\t", USB_USTAT2EP(trn_status), endpoints[USB_USTAT2EP(trn_status)].out_handler);
 	//rbdp->BDSTAT &= ~UOWN;                                                                        // Reclaim reply buffer
 	if ( endpoints[USB_USTAT2EP( trn_status )].out_handler ) {
 		endpoints[USB_USTAT2EP( trn_status )].out_handler();
 	} else {
-//              DPRINTF("No handler\n");
+		DPRINTF("No handler\n");
 	}
 }
 
@@ -678,14 +703,18 @@ usb_set_out_handler( int ep, usb_handler_t out_handler )
 void
 usb_ack( BDentry * bd )
 {
-	bd->BDSTAT = ( ( bd->BDSTAT ^ DTS ) & DTS ) | UOWN | DTSEN;	// TODO: Accomodate for >=256 byte buffers
+	bd->DTS ^= 1;
+	bd->DTSEN = 1;
+	bdp->UOWN = 1;
 }
 
 void
 usb_ack_zero( BDentry * bd )
 {
 	bd->BDCNT = 0;
-	bd->BDSTAT = ( ( bd->BDSTAT ^ DTS ) & DTS ) | UOWN | DTSEN;
+	bd->DTS ^= 1;
+	bd->DTSEN = 1;
+	bd->UOWN = 1;
 }
 
 /* JTR this needs to be fixed.
@@ -697,7 +726,9 @@ void
 usb_ack_out( BDentry * bd )
 {
 	bd->BDCNT = USB_MAX_BUFFER_SIZE;	// TODO: Fix correct size for current EP
-	bd->BDSTAT = ( ( bd->BDSTAT ^ DTS ) & DTS ) | UOWN | DTSEN;
+	bd->DTS ^= 1;
+	bd->DTSEN = 1;
+	bd->UOWN = 1;
 }
 
 void
@@ -705,14 +736,18 @@ usb_RequestError( void )
 {
 	unsigned int i;
 
-	usb_bdt[USB_CALC_BD( 0, USB_DIR_IN, USB_PP_EVEN )].BDSTAT = UOWN + BSTALL;
-	usb_bdt[USB_CALC_BD( 0, USB_DIR_IN, USB_PP_ODD )].BDSTAT = UOWN + BSTALL;
+	usb_bdt[USB_CALC_BD( 0, USB_DIR_IN, USB_PP_EVEN )].BSTALL = 1;
+	usb_bdt[USB_CALC_BD( 0, USB_DIR_IN, USB_PP_EVEN )].UOWN = 1;
+	usb_bdt[USB_CALC_BD( 0, USB_DIR_IN, USB_PP_ODD )].BSTALL = 1;
+	usb_bdt[USB_CALC_BD( 0, USB_DIR_IN, USB_PP_ODD )].UOWN = 1;
 
 	usb_bdt[USB_CALC_BD( 0, USB_DIR_OUT, USB_PP_EVEN )].BDCNT = USB_EP0_BUFFER_SIZE;
-	usb_bdt[USB_CALC_BD( 0, USB_DIR_OUT, USB_PP_EVEN )].BDSTAT = UOWN + BSTALL;
+	usb_bdt[USB_CALC_BD( 0, USB_DIR_OUT, USB_PP_EVEN )].BSTALL = 1;
+	usb_bdt[USB_CALC_BD( 0, USB_DIR_OUT, USB_PP_EVEN )].UOWN = 1;
 
 	usb_bdt[USB_CALC_BD( 0, USB_DIR_OUT, USB_PP_ODD )].BDCNT = USB_EP0_BUFFER_SIZE;
-	usb_bdt[USB_CALC_BD( 0, USB_DIR_OUT, USB_PP_ODD )].BDSTAT = UOWN + BSTALL;
+	usb_bdt[USB_CALC_BD( 0, USB_DIR_OUT, USB_PP_ODD )].BSTALL = 1;
+	usb_bdt[USB_CALC_BD( 0, USB_DIR_OUT, USB_PP_ODD )].UOWN = 1;
 
 	DPRINTF( "Request error\n" );
 	for ( i = 0; i < bdp->BDCNT; i++ )
@@ -757,8 +792,11 @@ send_descriptor( void )
 		usb_unset_in_handler( 0 );
 		DPRINTF( "Send done\n" );
 	}
-	rbdp->BDCNT = (uint8_t) packet_len;
-	usb_ack( rbdp );			// Packet length always less then 256 on endpoint 0
+	rbdp->BDCNT = (uint8_t) packet_len;	// Packet length always less then 256 on endpoint 0
+	rbdp->DTS = bdp->DTS;			// Host toggles on reception
+	rbdp->DTSEN = 1;
+	rbdp->UOWN = 1;
+//	usb_ack( rbdp );
 	desc_ptr += packet_len;
 	desc_len -= packet_len;
 }

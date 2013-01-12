@@ -155,38 +155,37 @@ InitCDC( void )
 void
 cdc_setup( void )
 {
-	unsigned char *packet;
+	usb_device_request_t *packet = (usb_device_request_t *) bdp->BDADDR;
 
 	unsigned int i;
 
-	packet = bdp->BDADDR;
-	DPRINTF( "IFace %02u ", packet[USB_bInterface] );
-	switch( packet[USB_bmRequestType] & ( USB_bmRequestType_TypeMask | USB_bmRequestType_RecipientMask ) ) {
+	DPRINTF( "IFace %02u ", packet->bInterface );
+	switch( packet->bmRequestType & ( USB_bmRequestType_TypeMask | USB_bmRequestType_RecipientMask ) ) {
 	case ( USB_bmRequestType_Class | USB_bmRequestType_Interface ):
-		switch( packet[USB_bRequest] ) {
+		switch( packet->bRequest ) {
 
-    case CDC_SEND_ENCAPSULATED_COMMAND:         // Required
+		case CDC_SEND_ENCAPSULATED_COMMAND:         // Required
 			usb_ack_zero( rbdp );
 			DPRINTF( "CDC_SEND_ENCAPSULATED_COMMAND\n" );
 			break;
 
-    case CDC_GET_ENCAPSULATED_RESPONSE:         // Required
+		case CDC_GET_ENCAPSULATED_RESPONSE:         // Required
 			usb_ack_zero( rbdp );
 			DPRINTF( "CDC_SEND_ENCAPSULATED_RESPONSE\n" );
 			break;
 
-    case CDC_SET_COMM_FEATURE:                  // Optional
-    case CDC_GET_COMM_FEATURE:                  // Optional
-    case CDC_CLEAR_COMM_FEATURE:                // Optional
-      usb_RequestError();                       // Not advertised in ACM functional descriptor
+		case CDC_SET_COMM_FEATURE:                  // Optional
+		case CDC_GET_COMM_FEATURE:                  // Optional
+		case CDC_CLEAR_COMM_FEATURE:                // Optional
+                        usb_RequestError();     // Not advertised in ACM functional descriptor
 			break;
 
-    case CDC_SET_LINE_CODING:                   // Optional, strongly recomended
+		case CDC_SET_LINE_CODING:                   // Optional, strongly recomended
 			usb_set_out_handler( 0, cdc_set_line_coding_data );	// Register out handler function
 			DPRINTF( "CDC_SET_LINE_CODING\n" );
 			break;
 
-    case CDC_GET_LINE_CODING:                   // Optional, strongly recomended
+		case CDC_GET_LINE_CODING:                   // Optional, strongly recomended
 			/* Assert sizeof(struct cdc_LineCodeing) = 7 < minimum endpoint buffer size
 			   size_t reply_len = *((unsigned int *) &packet[USB_wLength]);
 			   if (sizeof(struct cdc_LineCodeing) < reply_len) {
@@ -203,14 +202,14 @@ cdc_setup( void )
 			DPRINTF( "\n" );
 			break;
 
-    case CDC_SET_CONTROL_LINE_STATE:            // Optional
-			cls = *( (struct cdc_ControlLineState *) &packet[USB_wValue] );
+		case CDC_SET_CONTROL_LINE_STATE:            // Optional
+			cls = *( (struct cdc_ControlLineState *) &packet->wValue );
 			usb_set_in_handler( 0, cdc_set_control_line_state_status );
 			usb_ack_zero( rbdp );
 			DPRINTF( "CDC_SET_LINE_STATE 0x%04X\n", *((int*)(&cls)) );
 			break;
 
-    case CDC_SEND_BREAK:                        // Optional
+		case CDC_SEND_BREAK:                        // Optional
 		default:
 			usb_RequestError();
 		}
@@ -322,7 +321,7 @@ cdc_tx( void )
 void
 cdc_flush_tx( void )
 {
-	if ( txbdp->BDCNT && !( txbdp->BDSTAT & UOWN ) ) {
+	if ( txbdp->BDCNT && !( txbdp->UOWN ) ) {
 //    DPRINTF("Flush tx 0x%02X (0x%02X - ", txbdp->BDCNT, txbdp->BDSTAT);
 		usb_ack( txbdp );
 		usb_register_sof_handler( NULL );
@@ -350,7 +349,7 @@ CloseCDC( void )
 char
 BusyCDC( void )
 {
-	return (( txbdp->BDSTAT & UOWN ) /*|| (txbdp->BDCNT) */  );	// TODO: Implement PP buffering
+	return (( txbdp->UOWN ) /*|| (txbdp->BDCNT) */  );	// TODO: Implement PP buffering
 }
 
 /* Is data available in the CDC read buffer? */
@@ -408,7 +407,7 @@ putcCDC ( char c )
 {
 //  DPRINTF("putcCDC txbdp 0x%P (0x%02X) ", txbdp, txbdp->BDSTAT);
 	// TODO: Implement thread (interrupt) safety
-	while ( txbdp->BDSTAT & UOWN );
+	while ( txbdp->UOWN );
 	DisableUsbInterrupts();
 	txbdp->BDADDR[txbdp->BDCNT++] = c;
 //  DPRINTF(" added '%c' bytes to send %u (0x%02X)\n", c, txbdp->BDCNT, txbdp->BDSTAT);
