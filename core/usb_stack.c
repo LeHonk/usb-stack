@@ -313,7 +313,7 @@ usb_handle_setup( void )
 	int i;
 	for (i=0; i<8; i++)
 	    DPRINTF( "0x%02X ", bdp->BDADDR[i] );
-	DPRINTF( "\n" )
+	DPRINTF( "\n" );
 //	rbdp->DTSEN = 0;			// Reclaim reply buffer
 	switch ( packet->bmRequestType & USB_bmRequestType_TypeMask ) {
 	case USB_bmRequestType_Standard:
