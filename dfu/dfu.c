@@ -39,72 +39,72 @@ or send a letter to
 #include <assert.h>
 #include <libpic30.h>
 
-#define DFU_VID							0xDEAD
-#define DFU_PID							0xF007
-#define DFU_BCD							0x0100
+#define DFU_VID			0xDEAD
+#define DFU_PID			0xF007
+#define DFU_BCD			0x0100
 
 /* DFU Request Codes */
-#define DFU_DETACH					0x00
-#define DFU_DNLOAD					0x01
-#define DFU_UPLOAD					0x02
-#define DFU_GETSTATUS				0x03
-#define DFU_CLRSTATUS				0x04
-#define DFU_GETSTATE				0x05
-#define DFU_ABORT						0x06
+#define DFU_DETACH		0x00
+#define DFU_DNLOAD		0x01
+#define DFU_UPLOAD		0x02
+#define DFU_GETSTATUS		0x03
+#define DFU_CLRSTATUS		0x04
+#define DFU_GETSTATE		0x05
+#define DFU_ABORT		0x06
 
 /* DFU state machine states */
-#define APP_IDLE						0u
-#define APP_DETACH					1u
-#define DFU_IDLE						2u
-#define DFU_DNLOAD_SYNC			3u
-#define DFU_DNLOAD_BUSY			4u
-#define DFU_DNLOAD_IDLE			5u
-#define DFU_MANIFEST_SYNC		6u
-#define DFU_MANIFEST				7u
-#define DFU_MANIFEST_WAIT		8u
-#define DFU_UPLOAD_IDLE			9u
-#define DFU_ERROR						10u
+#define APP_IDLE		0u
+#define APP_DETACH		1u
+#define DFU_IDLE		2u
+#define DFU_DNLOAD_SYNC		3u
+#define DFU_DNLOAD_BUSY		4u
+#define DFU_DNLOAD_IDLE		5u
+#define DFU_MANIFEST_SYNC	6u
+#define DFU_MANIFEST		7u
+#define DFU_MANIFEST_WAIT	8u
+#define DFU_UPLOAD_IDLE		9u
+#define DFU_ERROR		10u
 
 /* DFU Status codes */
-#define DFU_OK							0x00
-#define DFU_errTARGET				0x01
-#define DFU_errFILE					0x02
-#define DFU_errWRITE				0x03
-#define DFU_errERASE				0x04
+#define DFU_OK			0x00
+#define DFU_errTARGET		0x01
+#define DFU_errFILE		0x02
+#define DFU_errWRITE		0x03
+#define DFU_errERASE		0x04
 #define DFU_errCHECK_ERASED	0x05
-#define DFU_errPROG					0x06
-#define DFU_errVERIFY				0x07
-#define DFU_errADDRESS			0x08
-#define DFU_errNOTDONE			0x09
-#define DFU_errFIRMWARE			0x0A
-#define DFU_errVENDOR				0x0B
-#define DFU_errUSBR					0x0C
-#define DFU_errPOR					0x0D
-#define DFU_errUNKNOWN			0x0E
+#define DFU_errPROG		0x06
+#define DFU_errVERIFY		0x07
+#define DFU_errADDRESS		0x08
+#define DFU_errNOTDONE		0x09
+#define DFU_errFIRMWARE		0x0A
+#define DFU_errVENDOR		0x0B
+#define DFU_errUSBR		0x0C
+#define DFU_errPOR		0x0D
+#define DFU_errUNKNOWN		0x0E
 #define DFU_errSTALLED_PKT	0x0F
 
 /* String identifiers */
-#define DFU_iManufacturer		1u
-#define DFU_iProduct				2u
-#define DFU_iSerialNum			3u
-#define	DFU_iTarget					4u
+#define DFU_iManufacturer	1u
+#define DFU_iProduct		2u
+#define DFU_iSerialNum		3u
+#define	DFU_iTarget		4u
 
 /* DFU mode device descriptor */
 const struct usb_device_descriptor_st dfu_device_descriptor = {
-	sizeof(dfu_device_descriptor),	// bLength
-	USB_DEVICE_DESCRIPTOR_TYPE,			// bDescriptorType
-	0x0100,													// bcdUSB
-	0x00,														// bDeviceClass
-	0x00,														// bDeviceSubClass
-	0x00,														// bDeviceProtocol
-	DFU_XFER_SIZE,									// bMaxPacketSize0
-	DFU_VID,												// idVendor
-	DFU_PID,												// idProduct
-	DFU_BCD,												// bcdDevice
-	DFU_iManufacturer,							// iManucaturer
-	DFU_iProduct,										// iProduct
-	DFU_iSerialNum,									// iSerialNumber
-	USB_NUM_CONFIGURATIONS					// bNumConfigurations
+        sizeof(dfu_device_descriptor),          // bLength
+        USB_DEVICE_DESCRIPTOR_TYPE,             // bDescriptorType
+        0x0100,                                 // bcdUSB
+        0x00,                                   // bDeviceClass
+        0x00,                                   // bDeviceSubClass
+        0x00,                                   // bDeviceProtocol
+        DFU_XFER_SIZE,                          // bMaxPacketSize0
+        DFU_VID,                                // idVendor
+        DFU_PID,                                // idProduct
+        DFU_BCD,                                // bcdDevice
+        DFU_iManufacturer,                      // iManucaturer
+        DFU_iProduct,                           // iProduct
+        DFU_iSerialNum,                         // iSerialNumber
+        USB_NUM_CONFIGURATIONS                  // bNumConfigurations
 };
 
 /* DFU mode configuration descriptor */
@@ -117,23 +117,23 @@ ROM const struct {
 } dfu_config_descriptor = {
 	{
 		sizeof(struct usb_configuration_descriptor_st),	// bLength
-		USB_CONFIGURATION_DESCRIPTOR_TYPE,							// bDescriptorType
-		sizeof(dfu_config_descriptor),									// wTotalLength (low byte),
-		0x01,																						// bNumInterfaces
-		0x01,																						// bConfigurationValue
-		0x00,																						// iConfiguration (0=none)
-		0x80,																						// bmAttributes (0x80 = bus powered)
-		0x32,																						// bMaxPower (in 2 mA units, 50=100 mA)
+		USB_CONFIGURATION_DESCRIPTOR_TYPE,		// bDescriptorType
+                sizeof(dfu_config_descriptor),  // wTotalLength (low byte),
+                0x01,                           // bNumInterfaces
+                0x01,                           // bConfigurationValue
+                0x00,                           // iConfiguration (0=none)
+                0x80,                           // bmAttributes (0x80 = bus powered)
+                0x32,                           // bMaxPower (in 2 mA units, 50=100 mA)
 	},{
-		sizeof(struct usb_interface_descriptor_st),			// bLength
-		USB_INTERFACE_DESCRIPTOR_TYPE,									// bDescriptorType
-		0x00,																						// bInterfaceNum
-		0x00,																						// bAlternateSetting (ie Target memories; Flash, EEPROM...)
-		0x00,																						// bNumEndpoints
-		0xFE,																						// bInterfaceClass
-		0x01,																						// bInterfaceSubClass
-		0x02,																						// bInterfaceProtocol
-		DFU_iTarget,																		// iInterface
+		sizeof(struct usb_interface_descriptor_st),	// bLength
+                USB_INTERFACE_DESCRIPTOR_TYPE,  // bDescriptorType
+                0x00,                           // bInterfaceNum
+                0x00,                           // bAlternateSetting (ie Target memories; Flash, EEPROM...)
+                0x00,                           // bNumEndpoints
+                0xFE,                           // bInterfaceClass
+                0x01,                           // bInterfaceSubClass
+                0x02,                           // bInterfaceProtocol
+                DFU_iTarget,                    // iInterface
 	},
 	DFU_FUNCTIONAL_DESC
 };
@@ -163,11 +163,11 @@ ROM const struct usb_string_descriptor_st * dfu_string_descriptor[DFU_NUM_STRING
 #define FLASH_WRITE_TIMEOUT_HIGH	0x00
 
 // TODO: Improve and relocate
-#define START_OF_BOOTLOADER			0x0200u
-#define END_OF_BOOTLOADER       (((uint32_t) &_PROGRAM_END) | (DFU_PAGE_SIZE-1))
-#define START_OF_USERAPP				((((uint32_t) &_PROGRAM_END) & ~(DFU_PAGE_SIZE-1)) + DFU_PAGE_SIZE)
-#define GOTO_USERAPP						asm ("goto 0x001000")
-#define	Reset()									asm ("reset")
+#define START_OF_BOOTLOADER		0x0200u
+#define END_OF_BOOTLOADER		(((uint32_t) &_PROGRAM_END) | (DFU_PAGE_SIZE-1))
+#define START_OF_USERAPP		((((uint32_t) &_PROGRAM_END) & ~(DFU_PAGE_SIZE-1)) + DFU_PAGE_SIZE)
+#define GOTO_USERAPP			asm ("goto 0x001000")
+#define	Reset()				asm ("reset")
 
 /* dfu state machine variables */
 volatile unsigned char dfuState __attribute__(( persistent, address ( 0x3FFC ) ));
@@ -554,10 +554,10 @@ main ( void )
 {
 	CORCONbits.PSV = 1;			// PSV not being initialized. May have been done by c_init though.
 	PSVPAG = 0;
-	CLKDIV = 0x0000;				// Set PLL prescaler (1:1) 32 Mhz Fcy
+        CLKDIV = 0x0000;                        // Set PLL prescaler (1:1) 32 Mhz Fcy
 	AD1PCFGL = 0x7FD8;			// BPv4 has five analog pins b0, b1, b2, b5, b15
 	AD1PCFGH = 0x0002;
-	TRISB = 0x8026;					// Analog pins are input, RB0 output
+        TRISB = 0x8026;                         // Analog pins are input, RB0 output
 
 	__builtin_write_OSCCONL( 0x00 );	// Disable secondary oscillator
 
@@ -571,10 +571,10 @@ main ( void )
 #endif
 
 	/* Jumper check test */
-	_LATB1 = 0;							// RB1 low
-	_CN5PUE = 1;						// Enable pull-up on PGC/CN5/RB1
-	_LATB0 = 0;							// RB0 low
-	Nop (  );							// Small delay to settle parasitic capacitance
+        _LATB1 = 0;                             // RB1 low
+        _CN5PUE = 1;                            // Enable pull-up on PGC/CN5/RB1
+        _LATB0 = 0;                             // RB0 low
+        Nop (  );                               // Small delay to settle parasitic capacitance
 	Nop (  );
 	// Possible future TODO: Checksum current FW and stay in bootloader if corrupt
 /*   if (!_RB1 || APP_DETACH == dfuState) */
