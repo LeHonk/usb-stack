@@ -1,6 +1,4 @@
 /*
-
-
 This work is licensed under the Creative Commons Attribution 3.0 Unported License.
 To view a copy of this license, visit http://creativecommons.org/licenses/by/3.0/
 or send a letter to
@@ -11,12 +9,6 @@ or send a letter to
 	California,
 	94105,
 	USA.
-
-Revision:
-nb i vf         bb  c c decf7 01/11/2011
-	-	Commented USB_VID
-		usb_stack.h will be triggered once this two have no values
-
 */
 
 #ifndef __USB_CONFIG_H__
@@ -60,9 +52,9 @@ products.
  */
 #define USB_PP_BUF_MODE 0
 
-#define USB_EP0_BUFFER_SIZE 64u
-#define CDC_NOTICE_BUFFER_SIZE 10u
-#define CDC_RXTX_BUFFER_SIZE 32u
+#define USB_EP0_BUFFER_SIZE	64u
+#define CDC_NOTICE_BUFFER_SIZE	10u
+#define CDC_RXTX_BUFFER_SIZE	32u
 #define USB_MAX_BUFFER_SIZE	32u
 
 /* Low Power Request 
@@ -75,15 +67,15 @@ products.
 /* Descriptors */
 
 #define USB_NUM_CONFIGURATIONS	1u
-#define USB_NUM_INTERFACES		3u
-#define USB_NUM_ENDPOINTS		3u
-#define USB_NUM_STRINGS			4u
+#define USB_NUM_INTERFACES	3u
+#define USB_NUM_ENDPOINTS	3u
+#define USB_NUM_STRINGS		4u
 
 #define DFU_INTERFACE_NUMBER	2u
 
 /* String identifiers */
-#define USB_iManufacturer		1u
-#define USB_iProduct			2u
-#define USB_iSerialNum			3u
+#define USB_iManufacturer	1u
+#define USB_iProduct		2u
+#define USB_iSerialNum		3u
 
 #endif /* USB_CONFIG_H */

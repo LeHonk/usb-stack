@@ -19,34 +19,34 @@
 #include "cdc.h"
 
 ROM const struct usb_device_descriptor_st cdc_device_descriptor = {
-  sizeof(cdc_device_descriptor),                // bLength
-  USB_DEVICE_DESCRIPTOR_TYPE,                   // bDescriptorType
-  0x0200,                                       // bcdUSB
-  0x02,                                         // bDeviceClass
-  0x00,                                         // bDeviceSubClass
-  0x00,                                         // bDeviceProtocol
-  USB_EP0_BUFFER_SIZE,                          // bMaxPacketSize
-  USB_VID,                                      // idVendor
-  USB_PID,                                      // idProduct
-  USB_DEV,                                      // bcdDevice
-  USB_iManufacturer,                            // iManufacturer
-  USB_iProduct,                                 // iProduct
-  USB_iSerialNum,                               // iSerialNumber (none)
-  USB_NUM_CONFIGURATIONS                        // bNumConfigurations 
+        sizeof(cdc_device_descriptor),          // bLength
+        USB_DEVICE_DESCRIPTOR_TYPE,             // bDescriptorType
+        0x0200,                                 // bcdUSB
+        0x02,                                   // bDeviceClass
+        0x00,                                   // bDeviceSubClass
+        0x00,                                   // bDeviceProtocol
+        USB_EP0_BUFFER_SIZE,                    // bMaxPacketSize
+        USB_VID,                                // idVendor
+        USB_PID,                                // idProduct
+        USB_DEV,                                // bcdDevice
+        USB_iManufacturer,                      // iManufacturer
+        USB_iProduct,                           // iProduct
+        USB_iSerialNum,                         // iSerialNumber (none)
+        USB_NUM_CONFIGURATIONS                  // bNumConfigurations 
 };
 
 //#define USB_CONFIG_DESC_TOT_LENGTH (9+9+5+4+5+5+7+9+7+7)	//+DFU_RUNTIME_DESC_LENGTH)
 ROM const struct {
 	struct usb_configuration_descriptor_st	config;
-	struct usb_interface_descriptor_st			cdc_ctrl_iface;
-	struct cdc_function_descriptor5_st			cdc_header;
-	struct cdc_function_descriptor4_st			cdc_acm;
-	struct cdc_function_descriptor5_st			cdc_union;
-	struct cdc_function_descriptor5_st			cdc_management;
-	struct usb_endpoint_descriptor_st				cdc_control;
-	struct usb_interface_descriptor_st			cdc_xfer_iface;
-	struct usb_endpoint_descriptor_st				cdc_bulk_out;
-	struct usb_endpoint_descriptor_st				cdc_bulk_in;
+	struct usb_interface_descriptor_st	cdc_ctrl_iface;
+	struct cdc_function_descriptor5_st	cdc_header;
+	struct cdc_function_descriptor4_st	cdc_acm;
+	struct cdc_function_descriptor5_st	cdc_union;
+	struct cdc_function_descriptor5_st	cdc_management;
+	struct usb_endpoint_descriptor_st	cdc_control;
+	struct usb_interface_descriptor_st	cdc_xfer_iface;
+	struct usb_endpoint_descriptor_st	cdc_bulk_out;
+	struct usb_endpoint_descriptor_st	cdc_bulk_in;
 } cdc_config_descriptor = {
 	{
 		sizeof(struct usb_configuration_descriptor_st),	// bLength

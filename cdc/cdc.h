@@ -35,16 +35,16 @@ struct cdc_function_descriptor5_st {
 };
 
 /* Initialize usb cdc acm subsystem */
-void      InitCDC( void );
-void			OpenCDC( uint8_t config, uint16_t spbrg );
-char			BusyCDC( void );
-char			DataRdyCDC( void );
+void		InitCDC( void );
+void		OpenCDC( uint8_t config, uint16_t spbrg );
+char		BusyCDC( void );
+char		DataRdyCDC( void );
 
-char			getcCDC( void );
+char		getcCDC( void );
 uint16_t	getaCDC( char *array, uint16_t length );
 uint16_t	getsCDC( char *string, uint16_t length );
 
-void			putcCDC( char c );
+void		putcCDC( char c );
 uint16_t	putaCDC( const char *array, uint16_t length );
 uint16_t	putsCDC( const char *string );
 

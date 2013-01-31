@@ -35,13 +35,13 @@ or send a letter to
 #elif defined(__18F14K50)
 // Someones something
 #define USB_LED(x)
-#define STA_LED(x)								(LATBbits.LATB6 = (x))
-#define STA_LED_TOGGLE						(LATBbits.LATB6 ^= 1)
+#define STA_LED(x)			(LATBbits.LATB6 = (x))
+#define STA_LED_TOGGLE			(LATBbits.LATB6 ^= 1)
 #elif defined(__PIC24FJ256GB106__)
 // BPv4
 #define USB_LED(x)              	(LATBbits.LATB10 = (x))
 #define STA_LED(x)              	(LATBbits.LATB8 = (x))
-#define STA_LED_TOGGLE  					(LATBbits.LATB8 ^= 1)
+#define STA_LED_TOGGLE  		(LATBbits.LATB8 ^= 1)
 #else
 // Everyting else
 #define USB_LED(x)
@@ -65,10 +65,10 @@ main ( void )
 
 	// Infinity local echo
 	while ( 1 ) {
-    while ( !DataRdyCDC() )
+		while ( !DataRdyCDC() )
 			/* usb_handler() */ ;
 		c = getcCDC();
-    while ( BusyCDC() )
+		while ( BusyCDC() )
 			/* usb_handler() */ ;
 		putcCDC( c );
 	}
@@ -83,9 +83,9 @@ init( void )
 #if defined(PIC_18F)
 #if defined(__18F14K50)
 	PORTA = 0x00;
-  PORTB = 0x00;                                 // init port
+        PORTB = 0x00;                           // init port
 	TRISA = 0xFF;
-  TRISB = 0x00;                                 // RB6 = debug LED(tm)
+        TRISB = 0x00;                           // RB6 = debug LED(tm)
 	LATB = 0xFF;
 #elif defined(__18F2450) || defined(__18F2550) || defined(__18F4450) || defined(__18F4550)
 	//disable some defaults
@@ -94,44 +94,44 @@ init( void )
 #elif defined(__18F24J50)                       //OLS
 	//all pins digital
 	ANCON0 = 0xFF;
-  ANCON1 = 0 b00011111;                         // updated for lower power consumption. See datasheet page 343                  
+        ANCON1 = 0 b00011111;                   // updated for lower power consumption. See datasheet page 343                  
 	//make sure everything is input (should be on startup, but just in case)
 	TRISA = 0xff;
 	TRISB = 0xff;
 	TRISC = 0xff;
 	//on 18f24j50 we must manually enable PLL and wait at least 2ms for a lock
-  OSCTUNEbits.PLLEN = 1;                        //enable PLL
+        OSCTUNEbits.PLLEN = 1;                  //enable PLL
 	unsigned int cnt = 2048;
 
-  while ( cnt-- );                              //wait for lock
+        while ( cnt-- );                        //wait for lock
 #endif //defined(__18F24J50)
 	// pic18 interrupts
 	//setup USB as interrupt service
-  RCONbits.IPEN = 1;                            // enable interrupt priorities
+        RCONbits.IPEN = 1;                      // enable interrupt priorities
 	PIR1 = PIR2 = 0;
-  PIE2bits.USBIE = 1;                           // Enable USB interrupts
-  IPR2bits.USBIP = 0;                           // USB interrupt low priority
-  INTCONbits.GIEL = 1;                          // enable peripheral interrupts
-  INTCONbits.GIE = 1;                           // enable interrupts
+        PIE2bits.USBIE = 1;                     // Enable USB interrupts
+        IPR2bits.USBIP = 0;                     // USB interrupt low priority
+        INTCONbits.GIEL = 1;                    // enable peripheral interrupts
+        INTCONbits.GIE = 1;                     // enable interrupts
 #endif //defined(PIC_18F)
 
 // pic24 inits
 #if defined(__PIC24FJ256GB106__) || defined(__PIC24FJ256GB110__)
-  CORCONbits.PSV = 1;                           // JTR PIC24 fixup ?? PSV not being initialized. May have been done by c_init though.
+        CORCONbits.PSV = 1;                     // JTR PIC24 fixup ?? PSV not being initialized. May have been done by c_init though.
 	PSVPAG = 0;
-  CLKDIV = 0x0000;                              // Set PLL prescaler (1:1) 32 Mhz Fcy
-  AD1PCFGL = 0x7FD8;                            // BPv4 has five analog pins b0, b1, b2, b5, b15
+        CLKDIV = 0x0000;                        // Set PLL prescaler (1:1) 32 Mhz Fcy
+        AD1PCFGL = 0x7FD8;                      // BPv4 has five analog pins b0, b1, b2, b5, b15
 	AD1PCFGH = 0x0002;
-  TRISB = 0x8027;                               // Analog pins are input
+        TRISB = 0x8027;                         // Analog pins are input
 	TRISC = TRISD = TRISE = TRISF = TRISG = 0x0000;
 	LATB = LATC = LATD = LATE = LATF = LATG = 0x0000;
 
 
 
 //      OSCCONbits.SOSCEN=0;                    // Disable secondary oscillator
-  __builtin_write_OSCCONL( 0x00 );              // Disable secondary oscillator and unlock registers
+        __builtin_write_OSCCONL( 0x00 );        // Disable secondary oscillator and unlock registers
 // Configure Output Functions
-  _RP7R = 5;                                    // Assign U2TX To Pin RP2
+        _RP7R = 5;                              // Assign U2TX To Pin RP2
 	_TRISB7 = 0;																	// RP7 output
 
 	//CLKDIVbits.PLLEN = 1;
@@ -139,12 +139,12 @@ init( void )
 
 	while ( cnt-- );
 
-  _NSTDIS = 1;                                  // No nested interrupts
-  _USB1IP = 7;                                  // USB interrupt priority 7
+        _NSTDIS = 1;                            // No nested interrupts
+        _USB1IP = 7;                            // USB interrupt priority 7
 	_USB1IF = 0;																	// Clear USB Interrupt Flag
 	_USB1IE = 1;																	// Enable USB Interrupts
 
-  __builtin_write_OSCCONL(OSCCON | 0x40);       // Lock Registers 
+        __builtin_write_OSCCONL(OSCCON | 0x40); // Lock Registers 
 #endif //defined(__PI24FJ...)
 }
 

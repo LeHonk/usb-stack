@@ -19,8 +19,8 @@ VPATH	:= ../core
 OBJS	:= $(ASRCS:.c=.o) $(CSRCS:.c=.o)
 
 CFLAGS	:= -mcpu=$(MCU) -mconst-in-code -finline-functions -O2 \
-           -ffunction-sections -fdata-sections -Wall -I ../core/ -I .
-LFLAGS	+= -mcpu=$(MCU) -Wl,-Map=$(TARGET:.hex=.map),--heap=32,--gc-sections,--warn-section-align \
+           -Wall -I ../core/ -I .
+LFLAGS	+= -mcpu=$(MCU) -Wl,-Map=$(TARGET:.hex=.map),--heap=32,--warn-section-align \
            -Wl,--no-undefined,-T,p$(MCU).gld,--report-mem
 
 DEBUG ?= 1
@@ -28,7 +28,7 @@ ifeq ($(DEBUG), 1)
 CFLAGS += -g --debug -D__DEBUG
 else
 CFLAGS += -DNDEBUG -ffunction-sections -fdata-sections
-LFLAGS += -Wl,--strip-all
+LFLAGS += -Wl,--strip-all,--gc-sections
 endif
 
 comma:= ,
