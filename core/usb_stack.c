@@ -205,7 +205,7 @@ usb_handler( void )
 		 * Perhaps as a respons to our own stalls? 
 		 * For now just ignore it. */
 		ClearUsbInterruptFlag( USB_STALL );
-		DPRINTF( "Stall interrupt fired" );
+		DPRINTF( "Stall interrupt fired\n" );
 	} else if ( USB_SOF_FLAG ) {
 		/* Start-of-frame */
 		if ( sof_handler ) sof_handler();
